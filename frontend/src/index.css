@@ -1,0 +1,49 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.login-container {
+  max-width: 360px;
+  margin: 100px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+}
+
+
+.primary-btn {
+  width: 70%;
+  padding: 8px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: block;
+  margin: 10px auto;
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: #1976d2;
+  border: none;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+.switch-text {
+  text-align: center;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+}
