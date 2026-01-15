@@ -1,82 +1,9 @@
-<<<<<<< HEAD
-# Insurance Comparison, Recommendation & Claim Assistant (CoverMate)
-
-This is a full-stack project that demonstrates fetching insurance policy data from a PostgreSQL database through a FastAPI backend and displaying it on a React frontend.
-
----
-
-## Tech Stack
-
-Frontend:
-- React.js
-- HTML, CSS
-
-Backend:
-- FastAPI (Python)
-
-Database:
-- PostgreSQL
-
----
-
-## Project Structure
-
-backend/
-- main.py
-- model.py
-- database.py
-
-frontend/
-- App.js
-- LoginSignup.js
-- Policies.js
-- Policies.css
-- index.css
-
----
-
-## Database Tables
-
-- users  
-- providers  
-- policies  
-
-The policies table stores insurance policy details such as policy type, title, premium, term, coverage (JSON), and provider reference.
-
----
-
-## Features Implemented
-
-- Database schema creation (users, providers, policies)
-- Insertion of policy data into database
-- FastAPI backend API to fetch policies
-- React frontend to consume backend API
-- Display policies on frontend UI
-- Login and Signup UI (UI-only, for testing)
-
----
-
-## Application Workflow
-
-Database → Backend (FastAPI) → Frontend (React)
-
-1. Policy data is stored in PostgreSQL.
-2. Backend fetches data using SQLAlchemy.
-3. Backend exposes data via `/policies` API.
-4. Frontend calls the API.
-5. Policies are displayed on the UI.
-
----
-
-## How to Run
-
-Backend:
-=======
-<h1 align="center">Insurance Comparison, Recommendation & Claim Assistant (CoverMate)</h1>
+<h1 align="center">CoverMate – Insurance Comparison, Recommendation & Claim Assistant</h1>
 
 <p align="center">
-  A full-stack project demonstrating how insurance policy data stored in a database
-  is fetched through a backend API and displayed on a frontend application.
+  A full-stack internship project demonstrating how insurance policy data
+  is stored in a database, processed through backend APIs, and presented
+  via a clean and user-friendly frontend interface.
 </p>
 
 <hr/>
@@ -95,12 +22,12 @@ Backend:
 <pre>
 backend/
  ├── main.py          (FastAPI application)
- ├── model.py         (Users, Providers, Policies tables)
- ├── database.py      (Database connection)
+ ├── model.py         (Users, Providers, Policies models)
+ ├── database.py      (Database connection & configuration)
 
 frontend/
- ├── App.js           (App entry point)
- ├── LoginSignup.js   (Login & Signup UI – test mode)
+ ├── App.js           (Application entry point & state handling)
+ ├── LoginSignup.js   (Login & Signup UI – UI testing only)
  ├── Policies.js      (Policies display page)
  ├── Policies.css     (Policies page styling)
  ├── index.css        (Global styles)
@@ -112,14 +39,15 @@ frontend/
 <ul>
   <li><strong>users</strong> – stores user information</li>
   <li><strong>providers</strong> – stores insurance provider details</li>
-  <li><strong>policies</strong> – stores insurance policy data:
+  <li>
+    <strong>policies</strong> – stores insurance policy data, including:
     <ul>
-      <li>policy type</li>
-      <li>title</li>
-      <li>premium</li>
-      <li>term duration</li>
-      <li>coverage (JSON)</li>
-      <li>provider reference</li>
+      <li>Policy type</li>
+      <li>Title</li>
+      <li>Premium</li>
+      <li>Term duration</li>
+      <li>Coverage details (JSON)</li>
+      <li>Provider reference</li>
     </ul>
   </li>
 </ul>
@@ -128,13 +56,13 @@ frontend/
 
 <h2>✅ Features Implemented</h2>
 <ul>
-  <li>Created PostgreSQL database schema (users, providers, policies)</li>
-  <li>Inserted insurance policy data into database</li>
+  <li>Designed and implemented PostgreSQL database schema</li>
+  <li>Inserted sample insurance policy data</li>
   <li>Built FastAPI backend to fetch policy data</li>
-  <li>Exposed backend API (<code>/policies</code>)</li>
-  <li>Connected React frontend to backend API</li>
-  <li>Displayed policy data on frontend UI</li>
-  <li>Login & Signup UI (testing purpose only)</li>
+  <li>Exposed REST API endpoint (<code>/policies</code>)</li>
+  <li>Connected React frontend with backend API</li>
+  <li>Displayed insurance policies on frontend UI</li>
+  <li>Implemented Login & Signup UI (for testing purposes only)</li>
 </ul>
 
 <hr/>
@@ -144,12 +72,35 @@ frontend/
 <p><strong>Database → Backend → Frontend</strong></p>
 
 <ol>
-  <li>Policy data is stored in PostgreSQL database.</li>
+  <li>Insurance policy data is stored in the PostgreSQL database.</li>
   <li>FastAPI backend fetches data using SQLAlchemy.</li>
-  <li>Backend sends data as JSON via API.</li>
-  <li>React frontend calls the backend API.</li>
-  <li>Policies are displayed on the UI.</li>
+  <li>Backend exposes data as JSON through REST APIs.</li>
+  <li>React frontend consumes the APIs.</li>
+  <li>Policy information is displayed to the user.</li>
 </ol>
+
+<hr/>
+
+<h2>📅 Progress Log (Infosys Springboard 6.0 Internship)</h2>
+
+<ul>
+  <li>
+    <strong>15 Jan 2026 – Frontend UI Improvements</strong><br/><br/>
+    Improved the frontend UI with a focus on clarity, layout consistency,
+    and smooth user flow, without modifying backend logic or authentication.
+    <ul>
+      <li>Added application title and subtitle for clear identity</li>
+      <li>Enhanced Login & Signup UI alignment and styling using CSS</li>
+      <li>Improved Policies page layout with card-based UI and hover effects</li>
+      <li>Added “Back to Login” navigation using existing React state</li>
+      <li>Maintained existing file structure and code organization</li>
+    </ul>
+    <br/>
+    <strong>Outcome:</strong>  
+    The UI is now clean, professional, and user-friendly.
+    The frontend is ready for JWT authentication and future enhancements.
+  </li>
+</ul>
 
 <hr/>
 
@@ -176,20 +127,20 @@ http://localhost:3000
 
 <h2>🧪 Note</h2>
 <p>
-Login and Signup are implemented only for UI testing.
-Authentication and JWT will be added in future.
+Login and Signup functionality is implemented only for UI testing.
+Authentication and JWT-based security will be added in future stages.
 </p>
 
 <hr/>
 
 <h2>📌 Project Status</h2>
 <p>
-Backend and frontend integration is completed.
-Policy data is successfully fetched from database and displayed on frontend.
+Backend and frontend integration is complete.
+Insurance policy data is successfully fetched from the database
+and displayed on the frontend with an improved UI.
 </p>
 
 <hr/>
 
 <h2>👤 Author</h2>
 <p><strong>Sadhu Chandra Sekhar</strong></p>
->>>>>>> 52a2e7840f84165ef300a1a479409e32d94b118f
