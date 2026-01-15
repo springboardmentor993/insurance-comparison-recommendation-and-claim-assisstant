@@ -47,3 +47,20 @@ label {
   display: block;
   margin-top: 10px;
 }
+
+/* App Header */
+.app-header {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.app-title {
+  font-size: 32px;
+  color: #2c3e50;
+}
+
+.app-subtitle {
+  font-size: 14px;
+  color: #555;
+}

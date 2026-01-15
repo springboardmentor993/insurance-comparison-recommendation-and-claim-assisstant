@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Policies.css";
 
-function Policies() {
+function Policies(onLogout) {
   const [policies, setPolicies] = useState([]);
 
   useEffect(() => {

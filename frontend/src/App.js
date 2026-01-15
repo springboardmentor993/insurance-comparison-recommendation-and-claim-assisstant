@@ -6,8 +6,9 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   if (isLoggedIn) {
-    return <Policies />;
+    return <Policies onLogout={() => setIsLoggedIn(false)} />;
   }
+
 
   return <LoginSignup onLoginSuccess={() => setIsLoggedIn(true)} />;
 }
