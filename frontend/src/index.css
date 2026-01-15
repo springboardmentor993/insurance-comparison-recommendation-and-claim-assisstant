@@ -5,37 +5,57 @@ body {
 
 .login-container {
   max-width: 360px;
-  margin: 100px auto;
-  padding: 20px;
+  margin: 20px auto;
+  padding: 25px;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
 
 input {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 
+
 .primary-btn {
-  width: 70%;
-  padding: 8px;
+  width: 100%;
+  padding: 10px;
   background-color: #1976d2;
   color: white;
   border: none;
   cursor: pointer;
-  display: block;
-  margin: 10px auto;
+  margin-top: 15px;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
+.primary-btn:hover {
+  background-color: #155fa0;
+}
+
+
 .secondary-btn {
-  background-color: transparent;
-  color: #1976d2;
+  background: none;
   border: none;
+  color: #1976d2;
   cursor: pointer;
   display: block;
-  margin: 0 auto;
+  margin: 12px auto 0;
+  font-size: 13px;
 }
+
 
 .switch-text {
   text-align: center;
@@ -51,16 +71,28 @@ label {
 /* App Header */
 .app-header {
   text-align: center;
-  margin-top: 40px;
-  margin-bottom: 20px;
-}
-
-.app-title {
-  font-size: 32px;
-  color: #2c3e50;
+  margin-top: 30px;
+  margin-bottom: 16px;
 }
 
 .app-subtitle {
   font-size: 14px;
   color: #555;
 }
+
+
+/* Center content better on large screens */
+#root {
+  min-height: 100vh;
+}
+h1, h2 {
+  color: #2c3e50;
+}
+
+p {
+  line-height: 1.4;
+}
+
+
+
+
