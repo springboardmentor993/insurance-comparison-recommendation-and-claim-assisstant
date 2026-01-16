@@ -82,3 +82,29 @@ body {
 .logout-btn:hover {
   background-color: #155fa0;
 }
+
+.category-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.category-btn {
+  padding: 6px 14px;
+  border: 1px solid #1976d2;
+  background-color: white;
+  color: #1976d2;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.category-btn:hover {
+  background-color: #e3f2fd;
+}
+
+.category-btn.active {
+  background-color: #1976d2;
+  color: white;
+}
