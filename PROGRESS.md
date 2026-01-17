@@ -71,3 +71,8 @@ basic UI flow (Login → Policies → Back to Login) was completed.
 **Outcome:**  
 Policies are now dynamically organized and displayed based on
 user-selected categories, fulfilling the mentor’s requirement.
+
+## 17 Jan 2026
+- Completed policy comparison feature (2–3 policies)
+- Added comparison table (premium, term, deductible)
+- Polished UI and cleaned CSS
