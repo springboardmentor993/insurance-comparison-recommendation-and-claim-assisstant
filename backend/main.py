@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from model import Policy
-from sqlalchemy.orm import Session,relationship
-from database import engine, SessionLocal
+from routers import policies,login
+from schemas import SignupRequest
 
 app = FastAPI()
 
@@ -14,25 +14,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-
-@app.post("/login")
-def login():
-    return {"message": "Login API working"}
-
-
-class SignupRequest(BaseModel):
-    name: str
-    email: str
-    password: str
+app.include_router(policies.router)
+app.include_router(login.router)
 
 @app.post("/signup")
 def signup(user: SignupRequest):
@@ -42,9 +25,3 @@ def signup(user: SignupRequest):
         "name": user.name,
         "email": user.email
     }
-
-
-@app.get("/policies")
-def get_policies(db:Session=Depends(get_db)):
-    policies = db.query(Policy).all()
-    return policies

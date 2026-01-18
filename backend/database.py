@@ -12,3 +12,10 @@ SessionLocal = sessionmaker( #simple ga cheppali ante edi session factory
 ) #session ante database tho interact cheyadaniki use chese object
 
 Base = declarative_base() # parent class for all ORM models
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

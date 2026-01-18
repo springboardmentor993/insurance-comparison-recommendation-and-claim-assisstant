@@ -1,16 +1,25 @@
 import { useState } from "react";
-import LoginSignup from "./LoginSignup";
-import Policies from "./Policies";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Policies from "./pages/Policies";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [page, setPage] = useState("login");
 
-  if (isLoggedIn) {
-    return <Policies onLogout={() => setIsLoggedIn(false)} />;
+  if (page === "login") {
+    return (
+      <Login
+        onLoginSuccess={() => setPage("policies")}
+        goToSignup={() => setPage("signup")}
+      />
+    );
   }
 
+  if (page === "signup") {
+    return <Signup goToLogin={() => setPage("login")} />;
+  }
 
-  return <LoginSignup onLoginSuccess={() => setIsLoggedIn(true)} />;
+  return <Policies onLogout={() => setPage("login")} />;
 }
 
 export default App;
