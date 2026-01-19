@@ -6,4 +6,8 @@ class SignupRequest(BaseModel):
     email: str
     password: str
     dob: date
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
     
