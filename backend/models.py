@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey,Date
 from database import Base
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -10,6 +10,8 @@ class User(Base):
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
+    dob = Column(Date, nullable=False)
+   
 
 
 

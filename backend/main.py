@@ -1,9 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from model import Policy
-from routers import policies,login
+from sqlalchemy.orm import Session
+
+from database import get_db
+from models import User
 from schemas import SignupRequest
+from hashing import Hash
+from routers import policies, login
+
 
 app = FastAPI()
 
@@ -18,10 +22,28 @@ app.include_router(policies.router)
 app.include_router(login.router)
 
 @app.post("/signup")
-def signup(user: SignupRequest):
-    print(user)
+def signup( request: SignupRequest,db: Session=Depends(get_db)):
+    #check email alredy exits
+    existing_user = db.query(User).filter(User.email == request.email).first()
+    if existing_user:
+        return {"message": "Email already registered"}
+
+    hashed_password=Hash.hash_password(request.password)
+    # create user object
+    new_user=User(
+        name=request.name,
+        email=request.email,
+        password=hashed_password,
+        dob=request.dob
+
+    )
+    # save to database
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
     return {
-        "message": "Signup data received",
-        "name": user.name,
-        "email": user.email
+        "message": "Signup successful",
+        "user_id": new_user.id,
+        "email": new_user.email
     }
