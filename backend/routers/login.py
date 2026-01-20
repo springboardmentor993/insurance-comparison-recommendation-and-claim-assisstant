@@ -4,6 +4,7 @@ from  models import User
 from sqlalchemy.orm import Session
 from database import get_db
 from hashing import Verify
+from jwt_token import create_access_token
 router=APIRouter()
 
 @router.post("/login")
@@ -14,8 +15,14 @@ def login(request: LoginRequest, db: Session=Depends(get_db)):
     is_valid = Verify.verify_password(request.password, user.password)
     if not is_valid:
         return {"message":"Invalid email or password"}
+
+    access_token = create_access_token(
+        data={"sub": user.email}
+        )
+
     return {
-        "message":"Login successful",
-        "user_id":user.id,
-        "email":user.email
-    }
+    "access_token": access_token,
+    "token_type": "bearer",
+    "user_id": user.id,
+    "email": user.email
+}
