@@ -1,7 +1,6 @@
 from fastapi import HTTPException, status
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
-from token import *
 
 
 # 🔑 Secret key

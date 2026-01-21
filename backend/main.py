@@ -35,7 +35,6 @@ def signup( request: SignupRequest,db: Session=Depends(get_db)):
         email=request.email,
         password=hashed_password,
         dob=request.dob
-
     )
     # save to database
     db.add(new_user)
