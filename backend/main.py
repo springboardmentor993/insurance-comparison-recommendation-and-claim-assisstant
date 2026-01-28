@@ -6,7 +6,7 @@ from database import get_db
 from models import User
 from schemas import SignupRequest
 from hashing import Hash
-from routers import policies, login
+from routers import policies, login, risk_profile
 
 
 app = FastAPI()
@@ -20,6 +20,8 @@ app.add_middleware(
 )
 app.include_router(policies.router)
 app.include_router(login.router)
+app.include_router(risk_profile.router)
+
 
 @app.post("/signup")
 def signup( request: SignupRequest,db: Session=Depends(get_db)):

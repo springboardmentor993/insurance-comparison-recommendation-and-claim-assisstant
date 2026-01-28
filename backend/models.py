@@ -11,7 +11,9 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     dob = Column(Date, nullable=False)
+    risk_profile = Column(JSONB, nullable=True)
 
+    
 class Policy(Base):
     __tablename__ = "policies"
 
