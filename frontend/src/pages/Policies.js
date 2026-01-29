@@ -1,21 +1,43 @@
 import { useState, useEffect } from "react";
 import "./Policies.css";
 
-function Policies({ onLogout }) {
+function Policies({ onLogout, goToRiskProfile }) {
   const [policies, setPolicies] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPolicies, setSelectedPolicies] = useState([]);
   const [showCompare, setShowCompare] = useState(false);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/policies")
-      .then((response) => response.json())
+    const token = localStorage.getItem("token");
+
+    fetch("http://127.0.0.1:8000/policies", {
+      headers: {
+        Authorization: `Bearer ${token}`, // ✅ IMPORTANT
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Unauthorized");
+        }
+        return response.json();
+      })
       .then((data) => {
-        setPolicies(data);
+        // ✅ SAFETY CHECK
+        if (Array.isArray(data)) {
+          setPolicies(data);
+        } else if (Array.isArray(data.policies)) {
+          setPolicies(data.policies);
+        } else {
+          setPolicies([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch policies:", error);
+        setPolicies([]);
       });
   }, []);
 
-  // FILTER POLICIES BY CATEGORY
+  // FILTER POLICIES
   const filteredPolicies =
     selectedCategory === "all"
       ? policies
@@ -47,9 +69,19 @@ function Policies({ onLogout }) {
       {/* HEADER */}
       <div className="policies-header">
         <h2 className="policies-title">Policies List</h2>
-        <button className="logout-btn" onClick={onLogout}>
-          Back to Login
-        </button>
+
+        <div>
+          <button
+            className="preferences-btn"
+            onClick={goToRiskProfile}
+          >
+            Set Preferences
+          </button>
+
+          <button className="logout-btn" onClick={onLogout}>
+            Back to Login
+          </button>
+        </div>
       </div>
 
       {/* CATEGORY BUTTONS */}

@@ -19,26 +19,31 @@ function RiskProfile({ userId, onSubmitSuccess }) {
       annual_income: Number(income),
       dependents: Number(dependents),
       health_condition: health,
-      risk_level: riskLevel
+      risk_level: riskLevel,
     };
 
     try {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
         `http://127.0.0.1:8000/users/${userId}/risk-profile`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(riskData)
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // ✅ IMPORTANT
+          },
+          body: JSON.stringify(riskData),
         }
       );
 
       if (!response.ok) {
-        alert("Failed to save risk profile");
+        alert("Failed to save preferences");
         return;
       }
 
-      alert("Risk profile saved successfully");
-      onSubmitSuccess();
+      alert("Preferences saved successfully");
+      onSubmitSuccess(); // 👉 move to recommendations
 
     } catch (error) {
       console.error(error);
@@ -48,7 +53,7 @@ function RiskProfile({ userId, onSubmitSuccess }) {
 
   return (
     <div className="auth-container">
-      <h2>User Risk Profile</h2>
+      <h2>Insurance Preferences</h2>
 
       <input
         type="number"
@@ -84,7 +89,7 @@ function RiskProfile({ userId, onSubmitSuccess }) {
       </select>
 
       <button className="primary-btn" onClick={handleSubmit}>
-        Save Risk Profile
+        Save Preferences
       </button>
     </div>
   );
