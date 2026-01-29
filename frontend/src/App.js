@@ -15,7 +15,7 @@ function App() {
 
     if (storedUserId && token) {
       setUserId(storedUserId);
-      setPage("risk"); // or "policies"
+      setPage("policies"); // or "policies"
     }
   }, []);
 
@@ -25,7 +25,7 @@ function App() {
       <Login
         onLoginSuccess={(id) => {
           setUserId(id);
-          setPage("risk");
+          setPage("policies");
         }}
         goToSignup={() => setPage("signup")}
       />
