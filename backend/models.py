@@ -34,8 +34,6 @@ class RecommendedPolicy(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     policy_id = Column(Integer, ForeignKey("policies.id"), nullable=False)
-
     score = Column(Float, nullable=False)
     reason = Column(String, nullable=False)
-
     recommended_at = Column(DateTime, default=datetime.utcnow)
