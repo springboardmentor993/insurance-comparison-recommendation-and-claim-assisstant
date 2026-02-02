@@ -28,12 +28,12 @@ class Policy(Base):
     tnc_url = Column(String)
     created_at = Column(DateTime)
 
-class RecommendedPolicy(Base):
-    __tablename__ = "recommended_policies"
+# class RecommendedPolicy(Base):
+#     __tablename__ = "recommended_policies"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    policy_id = Column(Integer, ForeignKey("policies.id"), nullable=False)
-    score = Column(Float, nullable=False)
-    reason = Column(String, nullable=False)
-    recommended_at = Column(DateTime, default=datetime.utcnow)
+#     id = Column(Integer, primary_key=True, index=True)
+#     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+#     policy_id = Column(Integer, ForeignKey("policies.id"), nullable=False)
+#     score = Column(float, nullable=False)
+#     reason = Column(String, nullable=False)
+#     recommended_at = Column(DateTime, default=datetime.utcnow)

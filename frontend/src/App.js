@@ -50,13 +50,17 @@ function App() {
   // 4️⃣ Policies page
   return (
     <Policies
-    goToRiskProfile={() => setPage("risk")}
-      onLogout={() => {
-        localStorage.clear(); // ✅ LOGOUT CLEANUP
-        setUserId(null);
-        setPage("login");
-      }}
-    />
+  goToRiskProfile={() => setPage("risk")}
+  onLogout={() => {
+    // ✅ CLEAR EVERYTHING
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_id");
+
+    // ✅ RESET APP STATE
+    setUserId(null);
+    setPage("login");
+  }}
+/>
   );
 }
 
