@@ -79,7 +79,7 @@ function Policies({ onLogout, goToRiskProfile }) {
           </button>
 
           <button className="logout-btn" onClick={onLogout}>
-            Back to Login
+            Logout
           </button>
         </div>
       </div>

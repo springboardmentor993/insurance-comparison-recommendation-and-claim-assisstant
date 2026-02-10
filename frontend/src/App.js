@@ -8,22 +8,29 @@ function App() {
   const [page, setPage] = useState("login");
   const [userId, setUserId] = useState(null);
 
-  // ✅ RESTORE LOGIN ON REFRESH / NEW TAB
+  // ✅ CHECK STORED SESSION SAFELY
   useEffect(() => {
     const storedUserId = localStorage.getItem("user_id");
     const token = localStorage.getItem("token");
 
+    // Restore session ONLY if both exist
     if (storedUserId && token) {
       setUserId(storedUserId);
-      setPage("policies"); // or "policies"
+      setPage("policies");
+    } else {
+      // Clean broken session
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("token");
+      setPage("login");
     }
   }, []);
 
-  // 1️⃣ Login page
+  // 🔹 LOGIN PAGE
   if (page === "login") {
     return (
       <Login
         onLoginSuccess={(id) => {
+          localStorage.setItem("user_id", id);
           setUserId(id);
           setPage("policies");
         }}
@@ -32,12 +39,12 @@ function App() {
     );
   }
 
-  // 2️⃣ Signup page
+  // 🔹 SIGNUP PAGE
   if (page === "signup") {
     return <Signup goToLogin={() => setPage("login")} />;
   }
 
-  // 3️⃣ Risk Profile page
+  // 🔹 RISK PROFILE PAGE
   if (page === "risk") {
     return (
       <RiskProfile
@@ -47,20 +54,17 @@ function App() {
     );
   }
 
-  // 4️⃣ Policies page
+  // 🔹 POLICIES PAGE
   return (
     <Policies
-  goToRiskProfile={() => setPage("risk")}
-  onLogout={() => {
-    // ✅ CLEAR EVERYTHING
-    localStorage.removeItem("token");
-    localStorage.removeItem("user_id");
-
-    // ✅ RESET APP STATE
-    setUserId(null);
-    setPage("login");
-  }}
-/>
+      goToRiskProfile={() => setPage("risk")}
+      onLogout={() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user_id");
+        setUserId(null);
+        setPage("login");
+      }}
+    />
   );
 }
 
