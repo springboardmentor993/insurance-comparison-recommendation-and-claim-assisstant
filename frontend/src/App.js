@@ -7,23 +7,37 @@ import RiskProfile from "./pages/RiskProfile";
 function App() {
   const [page, setPage] = useState("login");
   const [userId, setUserId] = useState(null);
+  const [checkingSession, setCheckingSession] = useState(true);
 
-  // ✅ CHECK STORED SESSION SAFELY
+  // ✅ CHECK STORED SESSION ON APP LOAD
   useEffect(() => {
     const storedUserId = localStorage.getItem("user_id");
     const token = localStorage.getItem("token");
 
-    // Restore session ONLY if both exist
     if (storedUserId && token) {
       setUserId(storedUserId);
       setPage("policies");
     } else {
-      // Clean broken session
       localStorage.removeItem("user_id");
       localStorage.removeItem("token");
       setPage("login");
     }
+
+    setCheckingSession(false);
   }, []);
+
+  // ⏳ PREVENT BLANK SCREEN WHILE CHECKING SESSION
+  if (checkingSession) {
+    return <p style={{ textAlign: "center" }}>Loading...</p>;
+  }
+
+  // 🔐 HARD PAGE PROTECTION
+  const isAuthenticated = !!localStorage.getItem("token");
+
+  if (!isAuthenticated && page !== "login" && page !== "signup") {
+    setPage("login");
+    return null;
+  }
 
   // 🔹 LOGIN PAGE
   if (page === "login") {
@@ -44,8 +58,13 @@ function App() {
     return <Signup goToLogin={() => setPage("login")} />;
   }
 
-  // 🔹 RISK PROFILE PAGE
+  // 🔹 RISK PROFILE PAGE (GUARDED)
   if (page === "risk") {
+    if (!userId) {
+      setPage("login");
+      return null;
+    }
+
     return (
       <RiskProfile
         userId={userId}
@@ -54,7 +73,7 @@ function App() {
     );
   }
 
-  // 🔹 POLICIES PAGE
+  // 🔹 POLICIES PAGE (DEFAULT)
   return (
     <Policies
       goToRiskProfile={() => setPage("risk")}

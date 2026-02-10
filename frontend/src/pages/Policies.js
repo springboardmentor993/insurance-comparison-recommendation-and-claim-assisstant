@@ -1,28 +1,47 @@
 import { useState, useEffect } from "react";
 import "./Policies.css";
+import { BASE_URL } from "../api";
 
 function Policies({ onLogout, goToRiskProfile }) {
   const [policies, setPolicies] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPolicies, setSelectedPolicies] = useState([]);
   const [showCompare, setShowCompare] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://127.0.0.1:8000/policies", {
-      headers: {
-        Authorization: `Bearer ${token}`, // ✅ IMPORTANT
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Unauthorized");
+    if (!token) {
+      onLogout();
+      return;
+    }
+
+    const fetchPolicies = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(`${BASE_URL}/policies`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // 🔐 HANDLE SESSION EXPIRY
+        if (response.status === 401) {
+          alert("Session expired. Please login again.");
+          onLogout();
+          return;
         }
-        return response.json();
-      })
-      .then((data) => {
-        // ✅ SAFETY CHECK
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch policies");
+        }
+
+        const data = await response.json();
+
         if (Array.isArray(data)) {
           setPolicies(data);
         } else if (Array.isArray(data.policies)) {
@@ -30,14 +49,19 @@ function Policies({ onLogout, goToRiskProfile }) {
         } else {
           setPolicies([]);
         }
-      })
-      .catch((error) => {
-        console.error("Failed to fetch policies:", error);
+      } catch (err) {
+        console.error(err);
+        setError("Unable to load policies. Please try again.");
         setPolicies([]);
-      });
-  }, []);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // FILTER POLICIES
+    fetchPolicies();
+  }, [onLogout]);
+
+  // 🔍 FILTER POLICIES
   const filteredPolicies =
     selectedCategory === "all"
       ? policies
@@ -45,7 +69,7 @@ function Policies({ onLogout, goToRiskProfile }) {
           (policy) => policy.policy_type === selectedCategory
         );
 
-  // HANDLE CHECKBOX SELECTION (MAX 3)
+  // ✅ HANDLE CHECKBOX SELECTION (MAX 3)
   const handleSelectPolicy = (policy) => {
     const alreadySelected = selectedPolicies.find(
       (p) => p.id === policy.id
@@ -63,6 +87,16 @@ function Policies({ onLogout, goToRiskProfile }) {
       setSelectedPolicies([...selectedPolicies, policy]);
     }
   };
+
+  // ⏳ LOADING STATE
+  if (loading) {
+    return <p style={{ textAlign: "center" }}>Loading policies...</p>;
+  }
+
+  // ❌ ERROR STATE
+  if (error) {
+    return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
+  }
 
   return (
     <div className="policies-container">
@@ -97,6 +131,7 @@ function Policies({ onLogout, goToRiskProfile }) {
               }
               onClick={() => {
                 setSelectedCategory(cat);
+                setSelectedPolicies([]);
                 setShowCompare(false);
               }}
             >

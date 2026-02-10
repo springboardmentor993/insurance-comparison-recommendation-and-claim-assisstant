@@ -1,33 +1,41 @@
 import { useState } from "react";
 import axios from "axios";
 import "./Auth.css";
+import { BASE_URL } from "../api";
 
 function Login({ onLoginSuccess, goToSignup }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
+    setError("");
+
     if (!email || !password) {
-      alert("Email and Password are required");
+      setError("Email and password are required");
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/login", {
+      setLoading(true);
+
+      const response = await axios.post(`${BASE_URL}/login`, {
         email,
         password,
       });
 
       const { access_token, user_id } = response.data;
 
-      // ✅ STORE TOKEN (MOST IMPORTANT)
+      // ✅ STORE SESSION
       localStorage.setItem("token", access_token);
       localStorage.setItem("user_id", user_id);
 
-      onLoginSuccess(user_id); // redirect
-
-    } catch (error) {
-      alert("Invalid email or password");
+      onLoginSuccess(user_id);
+    } catch (err) {
+      setError("Invalid email or password");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,6 +47,8 @@ function Login({ onLoginSuccess, goToSignup }) {
       </p>
 
       <h2>Login</h2>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <input
         type="email"
@@ -54,11 +64,19 @@ function Login({ onLoginSuccess, goToSignup }) {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button className="primary-btn" onClick={handleLogin}>
-        Login
+      <button
+        className="primary-btn"
+        onClick={handleLogin}
+        disabled={loading}
+      >
+        {loading ? "Logging in..." : "Login"}
       </button>
 
-      <button className="secondary-btn" onClick={goToSignup}>
+      <button
+        className="secondary-btn"
+        onClick={goToSignup}
+        disabled={loading}
+      >
         Signup
       </button>
     </div>

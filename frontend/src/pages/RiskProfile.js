@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Auth.css";
+import { BASE_URL } from "../api";
 
 function RiskProfile({ userId, onSubmitSuccess }) {
   const [age, setAge] = useState("");
@@ -8,9 +9,24 @@ function RiskProfile({ userId, onSubmitSuccess }) {
   const [health, setHealth] = useState("none");
   const [riskLevel, setRiskLevel] = useState("medium");
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleSubmit = async () => {
+    setError("");
+
     if (!age || !income || !dependents) {
-      alert("Please fill all required fields");
+      setError("Please fill all required fields");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token || !userId) {
+      alert("Session expired. Please login again.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_id");
+      window.location.reload();
       return;
     }
 
@@ -23,37 +39,49 @@ function RiskProfile({ userId, onSubmitSuccess }) {
     };
 
     try {
-      const token = localStorage.getItem("token");
+      setLoading(true);
 
       const response = await fetch(
-        `http://127.0.0.1:8000/users/${userId}/risk-profile`,
+        `${BASE_URL}/users/${userId}/risk-profile`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // ✅ IMPORTANT
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(riskData),
         }
       );
 
-      if (!response.ok) {
-        alert("Failed to save preferences");
+      // 🔐 HANDLE SESSION EXPIRY
+      if (response.status === 401) {
+        alert("Session expired. Please login again.");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user_id");
+        window.location.reload();
         return;
       }
 
-      alert("Preferences saved successfully");
-      onSubmitSuccess(); // 👉 move to recommendations
+      if (!response.ok) {
+        throw new Error("Failed to save preferences");
+      }
 
-    } catch (error) {
-      console.error(error);
-      alert("Server error");
+      onSubmitSuccess(); // move back to policies
+    } catch (err) {
+      console.error(err);
+      setError("Unable to save preferences. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="auth-container">
       <h2>Insurance Preferences</h2>
+
+      {error && (
+        <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>
+      )}
 
       <input
         type="number"
@@ -88,8 +116,12 @@ function RiskProfile({ userId, onSubmitSuccess }) {
         <option value="high">High Risk</option>
       </select>
 
-      <button className="primary-btn" onClick={handleSubmit}>
-        Save Preferences
+      <button
+        className="primary-btn"
+        onClick={handleSubmit}
+        disabled={loading}
+      >
+        {loading ? "Saving..." : "Save Preferences"}
       </button>
     </div>
   );
