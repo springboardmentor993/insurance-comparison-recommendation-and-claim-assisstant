@@ -6,7 +6,7 @@ from database import get_db
 from models import User
 from schemas import SignupRequest
 from hashing import Hash
-from routers import policies, login, risk_profile
+from routers import policies, login, risk_profile, recommendations
 
 
 app = FastAPI()
@@ -21,6 +21,7 @@ app.add_middleware(
 app.include_router(policies.router)
 app.include_router(login.router)
 app.include_router(risk_profile.router)
+app.include_router(recommendations.router)
 
 
 @app.post("/signup")
