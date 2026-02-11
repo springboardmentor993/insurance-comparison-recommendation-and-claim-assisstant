@@ -23,7 +23,6 @@ function RiskProfile({ userId, onSubmitSuccess }) {
     const token = localStorage.getItem("token");
 
     if (!token || !userId) {
-      alert("Session expired. Please login again.");
       localStorage.removeItem("token");
       localStorage.removeItem("user_id");
       window.location.reload();
@@ -53,24 +52,14 @@ function RiskProfile({ userId, onSubmitSuccess }) {
         }
       );
 
-      if (response.status === 401) {
-        alert("Session expired. Please login again.");
-        localStorage.removeItem("token");
-        localStorage.removeItem("user_id");
-        window.location.reload();
-        return;
-      }
-
       if (!response.ok) {
         throw new Error("Failed to save preferences");
       }
 
-      // 🔥 THIS IS THE FIX
       onSubmitSuccess("recommendations");
 
     } catch (err) {
-      console.error(err);
-      setError("Unable to save preferences. Please try again.");
+      setError("Unable to save preferences.");
     } finally {
       setLoading(false);
     }
@@ -123,6 +112,15 @@ function RiskProfile({ userId, onSubmitSuccess }) {
         disabled={loading}
       >
         {loading ? "Saving..." : "Save Preferences"}
+      </button>
+
+      {/* 🔥 NEW BACK BUTTON */}
+      <button
+        style={{ marginTop: "10px", background: "#6b7280" }}
+        className="primary-btn"
+        onClick={() => onSubmitSuccess("policies")}
+      >
+        Back to Policies
       </button>
     </div>
   );

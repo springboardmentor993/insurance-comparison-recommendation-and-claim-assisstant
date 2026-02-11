@@ -1,83 +1,102 @@
-/* Page background */
+/* ========================= */
+/* PAGE BACKGROUND */
+/* ========================= */
+
 body {
-  background-color: #f2f4f8;
-  font-family: Arial, sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #eef2f7, #f8fafc);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-/* Center container */
+/* ========================= */
+/* FORM CONTAINER */
+/* ========================= */
+
 .auth-container {
-  width: 350px;
+  width: 400px;
   margin: 80px auto;
-  padding: 25px;
-  background-color: white;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Title */
-.auth-container h2 {
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
   text-align: center;
+}
+
+/* ========================= */
+/* TITLES */
+/* ========================= */
+
+.auth-container h1,
+.auth-container h2 {
   margin-bottom: 20px;
+  color: #1e293b;
 }
 
-/* Input fields */
-.auth-container input {
+/* ========================= */
+/* INPUTS */
+/* ========================= */
+
+.auth-container input,
+.auth-container select {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  transition: 0.2s ease;
 }
 
-/* Buttons */
-.auth-container button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 8px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.auth-container input:focus,
+.auth-container select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
-/* Primary button */
+/* ========================= */
+/* BUTTONS */
+/* ========================= */
+
 .primary-btn {
-  background-color: #1976d2;
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
   color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .primary-btn:hover {
-  background-color: #155fa0;
+  background: #1d4ed8;
 }
 
-/* Secondary button */
 .secondary-btn {
-  background-color: #e0e0e0;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #6b7280;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .secondary-btn:hover {
-  background-color: #cfcfcf;
+  background: #4b5563;
 }
 
-.auth-container button {
-  cursor: pointer;
-}
+/* ========================= */
+/* ERROR TEXT */
+/* ========================= */
 
-.auth-container input[type="date"] {
-  cursor: pointer;
-}
-
-.auth-container input {
-  cursor: text;
-}
-.app-title {
-  text-align: center;
-  color: #1976d2;
-  margin-bottom: 5px;
-}
-
-.app-subtitle {
-  text-align: center;
+.auth-container p {
   font-size: 13px;
-  color: #555;
-  margin-bottom: 20px;
 }

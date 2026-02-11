@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from datetime import datetime
 
 from database import get_db
-from models import User, Policy
+from models import User, Policy, Recommendation
 from oauth2 import get_current_user
 
 router = APIRouter()
@@ -29,7 +30,6 @@ def get_recommendations(
         raise HTTPException(status_code=400, detail="Risk profile not set")
 
     risk = user.risk_profile
-
     annual_income = risk.get("annual_income", 0)
     dependents = risk.get("dependents", 0)
     risk_level = risk.get("risk_level", "medium")
@@ -37,18 +37,23 @@ def get_recommendations(
     # 4️⃣ Fetch all policies
     policies = db.query(Policy).all()
 
+    # 🔥 5️⃣ DELETE old recommendations for this user
+    db.query(Recommendation).filter(
+        Recommendation.user_id == user_id
+    ).delete()
+
     recommendations = []
 
     for policy in policies:
         score = 0
         reasons = []
 
-        # 🔹 1. Affordability (25 points)
+        # Affordability
         if policy.premium <= annual_income * 0.05:
             score += 25
             reasons.append("Affordable based on your income")
 
-        # 🔹 2. Risk level logic (20 points)
+        # Risk logic
         if risk_level == "high" and policy.deductible < 5000:
             score += 20
             reasons.append("Low deductible suits high risk profile")
@@ -57,21 +62,31 @@ def get_recommendations(
             score += 15
             reasons.append("Higher deductible suits low risk profile")
 
-        # 🔹 3. Dependents logic (10 points)
+        # Dependents
         if dependents >= 2:
             score += 10
             reasons.append("Suitable for family coverage")
 
-        # 🔹 4. Low deductible bonus (5 points)
+        # Bonus
         if policy.deductible < 3000:
             score += 5
             reasons.append("Low deductible bonus")
 
-        # 🔹 5. Premium ranking bonus (up to 40 points)
         premium_score = max(0, 40 - int(policy.premium / 1000))
         score += premium_score
 
         reason_text = ", ".join(reasons) if reasons else "Basic eligibility match"
+
+        # 🔥 6️⃣ SAVE to DB
+        new_recommendation = Recommendation(
+            user_id=user_id,
+            policy_id=policy.id,
+            score=score,
+            reason=reason_text,
+            created_at=datetime.utcnow()
+        )
+
+        db.add(new_recommendation)
 
         recommendations.append({
             "id": policy.id,
@@ -83,10 +98,13 @@ def get_recommendations(
             "reason": reason_text
         })
 
-    # 6️⃣ Sort by score (highest first)
+    # 7️⃣ Commit all inserts
+    db.commit()
+
+    # 8️⃣ Sort
     recommendations.sort(key=lambda x: x["score"], reverse=True)
 
-    # 7️⃣ Return top 5
+    # 9️⃣ Return top 5
     return {
         "annual_income": annual_income,
         "top_recommendations": recommendations[:5]

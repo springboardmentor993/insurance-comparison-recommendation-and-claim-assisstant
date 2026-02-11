@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey,Date
-from database import Base
+from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, Date, Text
 from sqlalchemy.dialects.postgresql import JSONB
+from datetime import datetime
+from database import Base
 
 
 class User(Base):
@@ -27,6 +28,16 @@ class Policy(Base):
     deductible = Column(Numeric)
     tnc_url = Column(String)
     created_at = Column(DateTime)
+
+class Recommendation(Base):
+    __tablename__ = "recommendations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    policy_id = Column(Integer, ForeignKey("policies.id"))
+    score = Column(Integer)
+    reason = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 # class RecommendedPolicy(Base):
 #     __tablename__ = "recommended_policies"
