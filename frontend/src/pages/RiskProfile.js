@@ -53,7 +53,6 @@ function RiskProfile({ userId, onSubmitSuccess }) {
         }
       );
 
-      // 🔐 HANDLE SESSION EXPIRY
       if (response.status === 401) {
         alert("Session expired. Please login again.");
         localStorage.removeItem("token");
@@ -66,7 +65,9 @@ function RiskProfile({ userId, onSubmitSuccess }) {
         throw new Error("Failed to save preferences");
       }
 
-      onSubmitSuccess(); // move back to policies
+      // 🔥 THIS IS THE FIX
+      onSubmitSuccess("recommendations");
+
     } catch (err) {
       console.error(err);
       setError("Unable to save preferences. Please try again.");

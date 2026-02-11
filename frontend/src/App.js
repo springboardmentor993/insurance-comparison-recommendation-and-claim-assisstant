@@ -3,13 +3,14 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Policies from "./pages/Policies";
 import RiskProfile from "./pages/RiskProfile";
+import Recommendations from "./pages/Recommendations";
 
 function App() {
   const [page, setPage] = useState("login");
   const [userId, setUserId] = useState(null);
   const [checkingSession, setCheckingSession] = useState(true);
 
-  // ✅ CHECK STORED SESSION ON APP LOAD
+  // 🔐 Restore session on load
   useEffect(() => {
     const storedUserId = localStorage.getItem("user_id");
     const token = localStorage.getItem("token");
@@ -26,20 +27,29 @@ function App() {
     setCheckingSession(false);
   }, []);
 
-  // ⏳ PREVENT BLANK SCREEN WHILE CHECKING SESSION
+  // ⏳ Prevent render while checking session
   if (checkingSession) {
     return <p style={{ textAlign: "center" }}>Loading...</p>;
   }
 
-  // 🔐 HARD PAGE PROTECTION
-  const isAuthenticated = !!localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  const isAuthenticated = !!token;
 
+  // 🔒 Hard protection without state update during render
   if (!isAuthenticated && page !== "login" && page !== "signup") {
-    setPage("login");
-    return null;
+    return (
+      <Login
+        onLoginSuccess={(id) => {
+          localStorage.setItem("user_id", id);
+          setUserId(id);
+          setPage("policies");
+        }}
+        goToSignup={() => setPage("signup")}
+      />
+    );
   }
 
-  // 🔹 LOGIN PAGE
+  // 🔹 LOGIN
   if (page === "login") {
     return (
       <Login
@@ -53,27 +63,45 @@ function App() {
     );
   }
 
-  // 🔹 SIGNUP PAGE
+  // 🔹 SIGNUP
   if (page === "signup") {
     return <Signup goToLogin={() => setPage("login")} />;
   }
 
-  // 🔹 RISK PROFILE PAGE (GUARDED)
+  // 🔹 RISK PROFILE
   if (page === "risk") {
     if (!userId) {
-      setPage("login");
-      return null;
+      return (
+        <Login
+          onLoginSuccess={(id) => {
+            localStorage.setItem("user_id", id);
+            setUserId(id);
+            setPage("policies");
+          }}
+          goToSignup={() => setPage("signup")}
+        />
+      );
     }
 
     return (
       <RiskProfile
         userId={userId}
-        onSubmitSuccess={() => setPage("policies")}
+        onSubmitSuccess={(nextPage) => setPage(nextPage)}
       />
     );
   }
 
-  // 🔹 POLICIES PAGE (DEFAULT)
+  // 🔹 RECOMMENDATIONS
+  if (page === "recommendations") {
+    return (
+      <Recommendations
+        userId={userId}
+        onBack={() => setPage("policies")}
+      />
+    );
+  }
+
+  // 🔹 DEFAULT → POLICIES
   return (
     <Policies
       goToRiskProfile={() => setPage("risk")}
