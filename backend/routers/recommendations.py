@@ -32,12 +32,19 @@ def get_recommendations(
     risk = user.risk_profile
     annual_income = risk.get("annual_income", 0)
     dependents = risk.get("dependents", 0)
-    risk_level = risk.get("risk_level", "medium")
+    age = risk.get("age", 0)
+    health_condition = risk.get("health_condition", "normal")
 
-    # 4️⃣ Fetch all policies
+    # 🔥 4️⃣ AUTO CALCULATE RISK LEVEL
+    if age > 50 or dependents >= 3 or health_condition.lower() == "critical":
+        risk_level = "high"
+    else:
+        risk_level = "low"
+
+    # 5️⃣ Fetch all policies
     policies = db.query(Policy).all()
 
-    # 🔥 5️⃣ DELETE old recommendations for this user
+    # Delete old recommendations
     db.query(Recommendation).filter(
         Recommendation.user_id == user_id
     ).delete()
@@ -77,7 +84,6 @@ def get_recommendations(
 
         reason_text = ", ".join(reasons) if reasons else "Basic eligibility match"
 
-        # 🔥 6️⃣ SAVE to DB
         new_recommendation = Recommendation(
             user_id=user_id,
             policy_id=policy.id,
@@ -98,14 +104,12 @@ def get_recommendations(
             "reason": reason_text
         })
 
-    # 7️⃣ Commit all inserts
     db.commit()
 
-    # 8️⃣ Sort
     recommendations.sort(key=lambda x: x["score"], reverse=True)
 
-    # 9️⃣ Return top 5
     return {
+        "risk_level": risk_level,   # 🔥 UI can show this
         "annual_income": annual_income,
         "top_recommendations": recommendations[:5]
     }

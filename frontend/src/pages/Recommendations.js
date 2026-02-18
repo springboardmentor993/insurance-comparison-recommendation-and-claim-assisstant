@@ -4,6 +4,9 @@ import "./Recommendations.css";
 
 function Recommendations({ userId, onBack }) {
   const [recommendations, setRecommendations] = useState([]);
+  const [riskLevel, setRiskLevel] = useState("");
+  const [annualIncome, setAnnualIncome] = useState(0);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -41,7 +44,12 @@ function Recommendations({ userId, onBack }) {
         }
 
         const data = await response.json();
+
+        // 🔥 NEW
+        setRiskLevel(data.risk_level || "");
+        setAnnualIncome(data.annual_income || 0);
         setRecommendations(data.top_recommendations || []);
+
       } catch (err) {
         setError("Unable to load recommendations");
       } finally {
@@ -69,6 +77,12 @@ function Recommendations({ userId, onBack }) {
         <button className="back-btn" onClick={onBack}>
           Back
         </button>
+      </div>
+
+      {/* 🔥 NEW RISK DISPLAY */}
+      <div className="risk-summary">
+        <h3>Your Risk Level: {riskLevel.toUpperCase()}</h3>
+        <p>Annual Income: ₹{annualIncome}</p>
       </div>
 
       {recommendations.map((policy) => (

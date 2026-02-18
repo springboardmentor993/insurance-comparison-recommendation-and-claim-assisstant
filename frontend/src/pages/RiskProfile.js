@@ -7,7 +7,6 @@ function RiskProfile({ userId, onSubmitSuccess }) {
   const [income, setIncome] = useState("");
   const [dependents, setDependents] = useState("");
   const [health, setHealth] = useState("none");
-  const [riskLevel, setRiskLevel] = useState("medium");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -29,12 +28,12 @@ function RiskProfile({ userId, onSubmitSuccess }) {
       return;
     }
 
+    // 🔥 REMOVED risk_level
     const riskData = {
       age: Number(age),
       annual_income: Number(income),
       dependents: Number(dependents),
-      health_condition: health,
-      risk_level: riskLevel,
+      health_condition: health
     };
 
     try {
@@ -100,11 +99,7 @@ function RiskProfile({ userId, onSubmitSuccess }) {
         <option value="major">Major Issues</option>
       </select>
 
-      <select value={riskLevel} onChange={(e) => setRiskLevel(e.target.value)}>
-        <option value="low">Low Risk</option>
-        <option value="medium">Medium Risk</option>
-        <option value="high">High Risk</option>
-      </select>
+      {/* ✅ Risk dropdown removed completely */}
 
       <button
         className="primary-btn"
@@ -114,7 +109,6 @@ function RiskProfile({ userId, onSubmitSuccess }) {
         {loading ? "Saving..." : "Save Preferences"}
       </button>
 
-      {/* 🔥 NEW BACK BUTTON */}
       <button
         style={{ marginTop: "10px", background: "#6b7280" }}
         className="primary-btn"

@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import date 
+from decimal import Decimal
 
 class SignupRequest(BaseModel):
     name: str
@@ -12,20 +13,26 @@ class RiskProfileRequest(BaseModel):
     annual_income: int
     dependents: int
     health_condition: str
-    risk_level: str
+    # risk_level: str
 
 
 class LoginRequest(BaseModel):
     email: str
     password: str
     
-# class RecommendationResponse(BaseModel):
-#     policy_id: int
-#     score: float
-#     reason: str
-#     recommended_at: datetime
+class ClaimCreate(BaseModel):
+    user_policy_id: int
+    claim_type: str
+    incident_date: date
+    amount_claimed: Decimal
 
-#     class Config:
-#         orm_mode = True 
-        # “I am returning SQLAlchemy objects — convert them safely.”
-# “I use Pydantic schemas to control API responses and avoid exposing database models directly
+class ClaimResponse(BaseModel):
+    id: int
+    claim_number: str
+    claim_type: str
+    incident_date: date
+    amount_claimed: Decimal
+    status: str
+
+    class Config:
+        orm_mode = True # 👉 “You will receive SQLAlchemy object, not dictionary.”
