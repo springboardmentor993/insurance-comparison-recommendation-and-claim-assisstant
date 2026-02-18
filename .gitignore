@@ -49,4 +49,11 @@ build/
 coverage/
 logs/
 
+# ===============================
+# 🔒 GOOGLE OAUTH / SECRETS
+# ===============================
 credentials.json
+backend/credentials.json
+backend/client_secret.json
+backend/client_secret_*.json
+backend/token.pickle
