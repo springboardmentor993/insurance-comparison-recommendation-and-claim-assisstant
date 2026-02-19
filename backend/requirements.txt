@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+passlib
+python-jose
+python-dotenv
+python-multipart
+celery[redis]
+boto3
+redis
