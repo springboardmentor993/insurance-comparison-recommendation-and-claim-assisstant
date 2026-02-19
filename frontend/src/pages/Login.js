@@ -12,7 +12,7 @@ function Login({ onLoginSuccess, goToSignup }) {
   const handleLogin = async () => {
     setError("");
 
-    if (!email || !password) {
+    if (!email.trim() || !password.trim()) {
       setError("Email and password are required");
       return;
     }
@@ -21,19 +21,29 @@ function Login({ onLoginSuccess, goToSignup }) {
       setLoading(true);
 
       const response = await axios.post(`${BASE_URL}/login`, {
-        email,
-        password,
+        email: email.trim(),
+        password: password.trim(),
       });
 
       const { access_token, user_id } = response.data;
 
-      // ✅ STORE SESSION
+      // ✅ Clear old session first
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_id");
+
+      // ✅ Save new session
       localStorage.setItem("token", access_token);
       localStorage.setItem("user_id", user_id);
 
+      // ✅ Move to policies page
       onLoginSuccess(user_id);
+
     } catch (err) {
-      setError("Invalid email or password");
+      if (err.response && err.response.status === 401) {
+        setError("Invalid email or password");
+      } else {
+        setError("Server error. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -48,7 +58,7 @@ function Login({ onLoginSuccess, goToSignup }) {
 
       <h2>Login</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error-text">{error}</p>}
 
       <input
         type="email"

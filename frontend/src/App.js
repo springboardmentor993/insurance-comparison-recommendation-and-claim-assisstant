@@ -4,10 +4,13 @@ import Signup from "./pages/Signup";
 import Policies from "./pages/Policies";
 import RiskProfile from "./pages/RiskProfile";
 import Recommendations from "./pages/Recommendations";
+import UploadClaim from "./pages/UploadClaim";
+import MyClaims from "./pages/MyClaims";
 
 function App() {
   const [page, setPage] = useState("login");
   const [userId, setUserId] = useState(null);
+  const [selectedClaimId, setSelectedClaimId] = useState(null);
   const [checkingSession, setCheckingSession] = useState(true);
 
   // 🔐 Restore session on load
@@ -35,42 +38,18 @@ function App() {
   const token = localStorage.getItem("token");
   const isAuthenticated = !!token;
 
-  // 🔒 Hard protection without state update during render
+  // 🔒 Global protection
   if (!isAuthenticated && page !== "login" && page !== "signup") {
-    return (
-      <Login
-        onLoginSuccess={(id) => {
-          localStorage.setItem("user_id", id);
-          setUserId(id);
-          setPage("policies");
-        }}
-        goToSignup={() => setPage("signup")}
-      />
-    );
+    setPage("login");
+    return null;
   }
 
-  // 🔹 LOGIN
-  if (page === "login") {
-    return (
-      <Login
-        onLoginSuccess={(id) => {
-          localStorage.setItem("user_id", id);
-          setUserId(id);
-          setPage("policies");
-        }}
-        goToSignup={() => setPage("signup")}
-      />
-    );
-  }
+  // ==========================
+  // PAGE ROUTING
+  // ==========================
 
-  // 🔹 SIGNUP
-  if (page === "signup") {
-    return <Signup goToLogin={() => setPage("login")} />;
-  }
-
-  // 🔹 RISK PROFILE
-  if (page === "risk") {
-    if (!userId) {
+  switch (page) {
+    case "login":
       return (
         <Login
           onLoginSuccess={(id) => {
@@ -81,38 +60,60 @@ function App() {
           goToSignup={() => setPage("signup")}
         />
       );
-    }
 
-    return (
-      <RiskProfile
-        userId={userId}
-        onSubmitSuccess={(nextPage) => setPage(nextPage)}
-      />
-    );
+    case "signup":
+      return <Signup goToLogin={() => setPage("login")} />;
+
+    case "risk":
+      return (
+        <RiskProfile
+          userId={userId}
+          onSubmitSuccess={(nextPage) => setPage(nextPage)}
+        />
+      );
+
+    case "recommendations":
+      return (
+        <Recommendations
+          userId={userId}
+          onBack={() => setPage("policies")}
+        />
+      );
+
+    case "claims":
+      return (
+        <MyClaims
+          onBack={() => setPage("policies")}
+        />
+      );
+
+    case "upload":
+      return (
+        <UploadClaim
+          claimId={selectedClaimId}
+          onBack={() => setPage("policies")}
+        />
+      );
+
+    default:
+      return (
+        <Policies
+          goToRiskProfile={() => setPage("risk")}
+          goToRecommendations={() => setPage("recommendations")}
+          goToUpload={(claimId) => {
+            setSelectedClaimId(claimId);
+            setPage("upload");
+          }}
+          goToClaims={() => setPage("claims")}
+          onLogout={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user_id");
+            setUserId(null);
+            setPage("login");
+          }}
+        />
+      );
   }
-
-  // 🔹 RECOMMENDATIONS
-  if (page === "recommendations") {
-    return (
-      <Recommendations
-        userId={userId}
-        onBack={() => setPage("policies")}
-      />
-    );
-  }
-
-  // 🔹 DEFAULT → POLICIES
-  return (
-    <Policies
-      goToRiskProfile={() => setPage("risk")}
-      onLogout={() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user_id");
-        setUserId(null);
-        setPage("login");
-      }}
-    />
-  );
 }
 
 export default App;

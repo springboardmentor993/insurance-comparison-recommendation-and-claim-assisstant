@@ -2,8 +2,15 @@ import { useState, useEffect } from "react";
 import "./Policies.css";
 import { BASE_URL } from "../api";
 
-function Policies({ onLogout, goToRiskProfile }) {
+function Policies({
+  onLogout,
+  goToRiskProfile,
+  goToRecommendations,
+  goToUpload,
+  goToClaims
+}) {
   const [policies, setPolicies] = useState([]);
+  const [userPolicies, setUserPolicies] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPolicies, setSelectedPolicies] = useState([]);
   const [showCompare, setShowCompare] = useState(false);
@@ -12,30 +19,41 @@ function Policies({ onLogout, goToRiskProfile }) {
   const [coverage, setCoverage] = useState(100000);
   const [riskLevel, setRiskLevel] = useState("medium");
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const policiesPerPage = 6;
+  const token = localStorage.getItem("token");
 
+  // ================================
+  // FETCH POLICIES + USERPOLICIES
+  // ================================
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const fetchData = async () => {
+      try {
+        const policiesRes = await fetch(`${BASE_URL}/policies`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-    if (!token) {
-      onLogout();
-      return;
-    }
+        const userPoliciesRes = await fetch(`${BASE_URL}/userpolicies/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-    const fetchPolicies = async () => {
-      const response = await fetch(`${BASE_URL}/policies`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+        const policiesData = await policiesRes.json();
+        const userPoliciesData = await userPoliciesRes.json();
 
-      const data = await response.json();
-      setPolicies(Array.isArray(data) ? data : []);
-      setLoading(false);
+        setPolicies(Array.isArray(policiesData) ? policiesData : []);
+        setUserPolicies(Array.isArray(userPoliciesData) ? userPoliciesData : []);
+
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchPolicies();
-  }, [onLogout]);
+    fetchData();
+  }, [token]);
 
+  // ================================
+  // PREMIUM CALCULATOR
+  // ================================
   const getRiskMultiplier = () => {
     if (riskLevel === "low") return 1.05;
     if (riskLevel === "medium") return 1.1;
@@ -51,19 +69,17 @@ function Policies({ onLogout, goToRiskProfile }) {
     ).toFixed(2);
   };
 
+  // ================================
+  // FILTER
+  // ================================
   const filteredPolicies =
     selectedCategory === "all"
       ? policies
       : policies.filter((p) => p.policy_type === selectedCategory);
 
-  const indexOfLast = currentPage * policiesPerPage;
-  const indexOfFirst = indexOfLast - policiesPerPage;
-  const currentPolicies = filteredPolicies.slice(
-    indexOfFirst,
-    indexOfLast
-  );
-  const totalPages = Math.ceil(filteredPolicies.length / policiesPerPage);
-
+  // ================================
+  // SELECT FOR COMPARE
+  // ================================
   const togglePolicy = (policy) => {
     const exists = selectedPolicies.find((p) => p.id === policy.id);
 
@@ -80,7 +96,51 @@ function Policies({ onLogout, goToRiskProfile }) {
     }
   };
 
-  if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
+  // ================================
+  // CREATE CLAIM (FIXED DYNAMIC)
+  // ================================
+  const handleCreateClaim = async (policyId) => {
+    try {
+      // 🔥 Find purchased policy
+      const userPolicy = userPolicies.find(
+        (up) => up.policy_id === policyId
+      );
+
+      if (!userPolicy) {
+        alert("You have not purchased this policy.");
+        return;
+      }
+
+      const response = await fetch(`${BASE_URL}/claims/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          user_policy_id: userPolicy.id,
+          claim_type: "general",
+          incident_date: new Date().toISOString().split("T")[0],
+          amount_claimed: 1000,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.detail || "Claim creation failed");
+        return;
+      }
+
+      goToUpload(data.id);
+
+    } catch (error) {
+      console.error(error);
+      alert("Error creating claim");
+    }
+  };
+
+  if (loading) return <p className="loading-text">Loading policies...</p>;
 
   return (
     <div className="policies-container">
@@ -88,159 +148,42 @@ function Policies({ onLogout, goToRiskProfile }) {
       <div className="policies-header">
         <h2>Insurance Policies</h2>
         <div>
-          <button className="preferences-btn" onClick={goToRiskProfile}>
-            Preferences
-          </button>
-          <button className="logout-btn" onClick={onLogout}>
-            Logout
-          </button>
+          <button onClick={goToRiskProfile}>Preferences</button>
+          <button onClick={goToRecommendations}>Recommendations</button>
+          <button onClick={goToClaims}>My Claims</button>
+          <button onClick={onLogout}>Logout</button>
         </div>
       </div>
 
-      {!showCompare && (
-        <>
-          <div className="calculator-box">
-            <h3>Premium Calculator</h3>
-            <div className="calculator-row">
-              <div>
-                <label>Coverage</label>
-                <input
-                  type="number"
-                  value={coverage}
-                  onChange={(e) => setCoverage(Number(e.target.value))}
-                />
-              </div>
-              <div>
-                <label>Risk</label>
-                <select
-                  value={riskLevel}
-                  onChange={(e) => setRiskLevel(e.target.value)}
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
+      <div className="policy-grid">
+        {filteredPolicies.map((policy) => {
+          const isSelected = selectedPolicies.some(
+            (p) => p.id === policy.id
+          );
+
+          return (
+            <div
+              key={policy.id}
+              className={`policy-card ${isSelected ? "selected" : ""}`}
+              onClick={() => togglePolicy(policy)}
+            >
+              <h4>{policy.title}</h4>
+              <p>Type: {policy.policy_type}</p>
+              <p>Base ₹{policy.premium}</p>
+              <p>Estimated ₹{calculatePremium(policy.premium)}</p>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCreateClaim(policy.id);
+                }}
+              >
+                Upload Claim
+              </button>
             </div>
-          </div>
-
-          <div className="category-buttons">
-            {["all", "health", "travel", "auto", "home", "life"].map(
-              (cat) => (
-                <button
-                  key={cat}
-                  className={selectedCategory === cat ? "active" : ""}
-                  onClick={() => {
-                    setSelectedCategory(cat);
-                    setCurrentPage(1);
-                  }}
-                >
-                  {cat}
-                </button>
-              )
-            )}
-          </div>
-
-          <button
-            className="compare-btn"
-            disabled={selectedPolicies.length < 2}
-            onClick={() => setShowCompare(true)}
-          >
-            Compare ({selectedPolicies.length})
-          </button>
-
-          <div className="policy-grid">
-            {currentPolicies.map((policy) => {
-              const isSelected = selectedPolicies.some(
-                (p) => p.id === policy.id
-              );
-
-              return (
-                <div
-                  key={policy.id}
-                  className={`policy-card ${isSelected ? "selected" : ""}`}
-                  onClick={() => togglePolicy(policy)}
-                >
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    readOnly
-                    className="checkbox-top"
-                  />
-
-                  <h4>{policy.title}</h4>
-
-                  <p className="base">
-                    ₹{policy.premium}
-                  </p>
-
-                  <p className="estimated">
-                    Estimated ₹{calculatePremium(policy.premium)}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="pagination">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-            >
-              Previous
-            </button>
-
-            <span>
-              Page {currentPage} / {totalPages}
-            </span>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              Next
-            </button>
-          </div>
-        </>
-      )}
-
-      {showCompare && (
-  <div className="comparison-wrapper">
-    <h2 className="comparison-title">Policy Comparison</h2>
-
-    <div className="comparison-grid">
-      {selectedPolicies.map((policy) => (
-        <div key={policy.id} className="comparison-card">
-          <h3>{policy.title}</h3>
-
-          <div className="compare-row">
-            <span>Base Premium</span>
-            <strong>₹{policy.premium}</strong>
-          </div>
-
-          <div className="compare-row">
-            <span>Estimated Premium</span>
-            <strong className="highlight">
-              ₹{calculatePremium(policy.premium)}
-            </strong>
-          </div>
-
-          <div className="compare-row">
-            <span>Deductible</span>
-            <strong>₹{policy.deductible}</strong>
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <button
-      className="back-btn"
-      onClick={() => setShowCompare(false)}
-    >
-      Back to Policies
-    </button>
-  </div>
-)}
+          );
+        })}
+      </div>
 
     </div>
   );

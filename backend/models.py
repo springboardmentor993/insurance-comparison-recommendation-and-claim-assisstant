@@ -55,8 +55,6 @@ class UserPolicies(Base):
     status = Column(String(20), default="active")
     auto_renew = Column(Boolean, default=False)
 
-    created_at = Column(TIMESTAMP, server_default=func.now())
-
 
 class Claims(Base):
     __tablename__ = "claims"

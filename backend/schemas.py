@@ -35,4 +35,4 @@ class ClaimResponse(BaseModel):
     status: str
 
     class Config:
-        orm_mode = True # 👉 “You will receive SQLAlchemy object, not dictionary.”
+        from_attributes = True
