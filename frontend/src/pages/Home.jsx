@@ -1,111 +1,132 @@
-import { ShieldCheck, FileText, Star, Calculator, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import { FileText, TrendingUp, FolderOpen, ArrowRight, Shield, CheckCircle, Users } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
-const Home = () => {
-  const features = [
-    {
-      icon: FileText,
-      title: 'Browse Policies',
-      description: 'Explore our wide range of insurance policies tailored to your needs',
-      link: '/policies',
-      color: 'blue',
-    },
-    {
-      icon: Star,
-      title: 'Get Recommendations',
-      description: 'Receive personalized policy recommendations based on your risk profile',
-      link: '/recommendations',
-      color: 'purple',
-    },
-    {
-      icon: Calculator,
-      title: 'Calculate Premium',
-      description: 'Estimate your insurance premium with our advanced calculator',
-      link: '/calculator',
-      color: 'green',
-    },
-  ];
+export const Home = () => {
+    const { user } = useAuth();
 
-  const stats = [
-    { label: 'Active Policies', value: '10,000+', icon: FileText },
-    { label: 'Happy Customers', value: '5,000+', icon: ShieldCheck },
-    { label: 'Success Rate', value: '98%', icon: TrendingUp },
-  ];
+    const stats = [
+        { label: 'Policies Available', value: '500+', icon: FileText, color: 'from-blue-600 to-blue-700' },
+        { label: 'Happy Customers', value: '10K+', icon: Users, color: 'from-purple-600 to-purple-700' },
+        { label: 'Claims Processed', value: '5K+', icon: FolderOpen, color: 'from-green-600 to-green-700' },
+    ];
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Welcome to <span className="text-blue-600">InsureMe</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Your trusted partner in finding the perfect insurance coverage. 
-            Explore policies, get personalized recommendations, and secure your future today.
-          </p>
-        </div>
+    const quickActions = [
+        {
+            title: 'Browse Policies',
+            description: 'Explore our comprehensive policy catalog',
+            icon: FileText,
+            link: '/policies',
+            color: 'blue'
+        },
+        {
+            title: 'Get Recommendations',
+            description: 'Find personalized policy recommendations',
+            icon: TrendingUp,
+            link: '/recommendations',
+            color: 'purple'
+        },
+        {
+            title: 'File a Claim',
+            description: 'Submit and track your insurance claims',
+            icon: FolderOpen,
+            link: '/claims/file',
+            color: 'green'
+        },
+    ];
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6 text-center">
-                <Icon style={{ width: '40px', height: '40px', color: '#2563eb', margin: '0 auto 12px' }} />
-                <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
-                <div className="text-gray-600">{stat.label}</div>
-              </div>
-            );
-          })}
-        </div>
+    return (
+        <div className="space-y-12 animate-fade-in">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-3xl">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 animate-gradient" />
+                <Card className="relative border-2 border-blue-500/30" glass hover={false}>
+                    <div className="flex items-center gap-6">
+                        <div className="hidden sm:flex p-6 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl">
+                            <Shield className="h-16 w-16 text-white" />
+                        </div>
+                        <div className="flex-1">
+                            <h1 className="text-4xl font-bold gradient-text mb-2">
+                                Welcome back, {user?.name || 'User'}!
+                            </h1>
+                            <p className="text-slate-300 text-lg">
+                                Your trusted insurance management platform
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+            </div>
 
-        {/* Features Section */}
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Explore Our Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            const colorMap = {
-              blue: 'bg-blue-100 text-blue-600',
-              purple: 'bg-purple-100 text-purple-600',
-              green: 'bg-green-100 text-green-600',
-            };
-            
-            return (
-              <Link
-                key={index}
-                to={feature.link}
-                className="bg-white rounded-lg shadow-md p-8 hover:shadow-xl transition-shadow"
-              >
-                <div className={`w-16 h-16 ${colorMap[feature.color]} rounded-lg flex items-center justify-center mb-4`}>
-                  <Icon style={{ width: '32px', height: '32px' }} />
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {stats.map((stat, index) => {
+                    const Icon = stat.icon;
+                    return (
+                        <Card key={index} className="text-center" glass>
+                            <div className={`inline-flex p-4 bg-gradient-to-br ${stat.color} rounded-2xl mb-4`}>
+                                <Icon className="h-8 w-8 text-white" />
+                            </div>
+                            <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
+                            <p className="text-slate-400">{stat.label}</p>
+                        </Card>
+                    );
+                })}
+            </div>
+
+            {/* Quick Actions */}
+            <div>
+                <h2 className="text-2xl font-bold text-white mb-6">Quick Actions</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {quickActions.map((action, index) => {
+                        const Icon = action.icon;
+                        const colors = {
+                            blue: 'from-blue-600 to-blue-700',
+                            purple: 'from-purple-600 to-purple-700',
+                            green: 'from-green-600 to-green-700',
+                        };
+
+                        return (
+                            <Link key={index} to={action.link}>
+                                <Card className="h-full group cursor-pointer" glass>
+                                    <div className={`inline-flex p-3 bg-gradient-to-br ${colors[action.color]} rounded-xl mb-4 group-hover:scale-110 transition-transform`}>
+                                        <Icon className="h-6 w-6 text-white" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-white mb-2">{action.title}</h3>
+                                    <p className="text-slate-400 mb-4">{action.description}</p>
+                                    <div className="flex items-center text-blue-400 group-hover:text-blue-300">
+                                        <span className="mr-2">Get started</span>
+                                        <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                                    </div>
+                                </Card>
+                            </Link>
+                        );
+                    })}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </Link>
-            );
-          })}
-        </div>
+            </div>
 
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-xl p-12 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Complete your risk profile to receive personalized insurance recommendations
-          </p>
-          <Link
-            to="/profile"
-            className="inline-block bg-white text-blue-600 px-8 py-3 rounded-md font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Update Your Profile
-          </Link>
+            {/* Features */}
+            <Card glass hover={false}>
+                <h2 className="text-2xl font-bold text-white mb-6">Why Choose InsureMe?</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {[
+                        'Compare policies from top providers',
+                        'Personalized recommendations based on your needs',
+                        'Easy claim filing with document upload',
+                        'Real-time claim status tracking',
+                        'Fraud detection for your safety',
+                        'Expert support whenever you need',
+                    ].map((feature, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                            <CheckCircle className="h-6 w-6 text-green-400 flex-shrink-0 mt-0.5" />
+                            <p className="text-slate-300">{feature}</p>
+                        </div>
+                    ))}
+                </div>
+            </Card>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Home;

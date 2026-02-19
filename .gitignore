@@ -1,1 +1,22 @@
 /.vscode
+.gitignore
+# Environment files (contain secrets)
+.env
+backend/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Node
+node_modules/
+
+# Database
+*.db
+
+# Uploads
+uploads/

@@ -1,108 +1,151 @@
+"""
+Profile routes for user preferences and risk factors.
+GET /me - basic user info (name, email, dob)
+GET /profile - complete profile (preferences + risk factors)
+PUT /profile - update preferences and risk factors
+"""
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
+from typing import Dict, Any
 
-from schemas import RiskProfileCreate, RiskProfileOut, UserPreferencesUpdate
-from models import User, RiskProfile
-from deps import get_db
-from auth_deps import get_current_user_email
+from models.models import User
+from core.deps import get_db
+from auth.auth_deps import get_current_user_email
+from schemas.schemas import UserProfileUpdate, UserProfileOut
 
 router = APIRouter()
-@router.post("/risk-profile", response_model=RiskProfileOut)
-def create_or_update_risk_profile(
-    profile: RiskProfileCreate,
+
+
+class ProfileMeOut:
+    """Basic user info response."""
+    pass
+
+
+@router.get("/me")
+def get_me(
     db: Session = Depends(get_db),
     current_user_email: str = Depends(get_current_user_email),
 ):
-    """Create or update user risk profile"""
+    """Return current user's basic profile (name, email, dob)."""
     user = db.query(User).filter(User.email == current_user_email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
-    # Validate risk level
-    if profile.risk_profile.lower() not in ["high", "medium", "low"]:
-        raise HTTPException(
-            status_code=400,
-            detail="risk_profile must be one of: high, medium, low"
-        )
-
-    try:
-        existing_profile = db.query(RiskProfile).filter(RiskProfile.user_id == user.id).first()
-
-        if existing_profile:
-            existing_profile.dependents = profile.dependents
-            existing_profile.risk_profile = profile.risk_profile.lower()
-            db.commit()
-            db.refresh(existing_profile)
-            return existing_profile
-        else:
-            new_profile = RiskProfile(
-                user_id=user.id,
-                dependents=profile.dependents,
-                risk_profile=profile.risk_profile.lower()
-            )
-            db.add(new_profile)
-            db.commit()
-            db.refresh(new_profile)
-            return new_profile
-
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code=400, detail="Risk profile already exists")
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=f"Failed to save risk profile: {str(e)}")
+    
+    return {
+        "name": user.name,
+        "email": user.email,
+        "dob": str(user.dob) if user.dob else None,
+        "role": user.role or "user",
+    }
 
 
-@router.get("/risk-profile", response_model=RiskProfileOut)
-def get_risk_profile(
+@router.get("/profile", response_model=UserProfileOut)
+def get_profile(
     db: Session = Depends(get_db),
     current_user_email: str = Depends(get_current_user_email),
 ):
-    """Get current user's risk profile"""
+    """Return current user's complete profile (preferences + risk factors)."""
     user = db.query(User).filter(User.email == current_user_email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    risk_profile = user.risk_profile if user.risk_profile else {}
+    
+    return UserProfileOut(
+        preferences=risk_profile.get("preferences"),
+        risk_factors=risk_profile.get("risk_factors")
+    )
 
-    profile = db.query(RiskProfile).filter(RiskProfile.user_id == user.id).first()
-    if not profile:
-        raise HTTPException(status_code=404, detail="Risk profile not found")
 
-    return profile
-
-
-# ---------------------------------------------------------
-#  ⭐ NEW: USER PREFERENCES UPDATE API ⭐
-# ---------------------------------------------------------
-
-@router.patch("/preferences")
-def update_user_preferences(
-    prefs: UserPreferencesUpdate,
+@router.put("/profile", response_model=UserProfileOut)
+def update_profile(
+    profile_update: UserProfileUpdate,
     db: Session = Depends(get_db),
     current_user_email: str = Depends(get_current_user_email),
 ):
-    """
-    Update user preferences:
-    - income
-    - budget
-    - preferred_policy_type
-    These preferences will be used in the recommendation engine.
-    """
+    """Update current user's preferences and risk factors."""
     user = db.query(User).filter(User.email == current_user_email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
-    # Apply updates
-    if prefs.income is not None:
-        user.income = prefs.income
-
-    if prefs.budget is not None:
-        user.budget = prefs.budget
-
-    if prefs.preferred_policy_type is not None:
-        user.preferred_policy_type = prefs.preferred_policy_type
-
+    
+    # Get existing risk_profile or create empty dict
+    risk_profile = dict(user.risk_profile) if user.risk_profile else {}
+    
+    # Update preferences if provided
+    if profile_update.preferences is not None:
+        prefs_dict = profile_update.preferences.model_dump(exclude_none=True)
+        
+        # Get existing preferences or create empty dict
+        existing_prefs = risk_profile.get("preferences", {})
+        if not isinstance(existing_prefs, dict):
+            existing_prefs = {}
+        
+        # Merge new preferences with existing ones
+        existing_prefs.update(prefs_dict)
+        risk_profile["preferences"] = existing_prefs
+    
+    # Update risk factors if provided
+    if profile_update.risk_factors is not None:
+        risk_factors_dict = profile_update.risk_factors.model_dump(exclude_none=True)
+        
+        # Get existing risk factors or create empty dict
+        existing_factors = risk_profile.get("risk_factors", {})
+        if not isinstance(existing_factors, dict):
+            existing_factors = {}
+        
+        # Merge each insurance type separately
+        for insurance_type, factors in risk_factors_dict.items():
+            if factors is not None:
+                existing_type_factors = existing_factors.get(insurance_type, {})
+                if not isinstance(existing_type_factors, dict):
+                    existing_type_factors = {}
+                existing_type_factors.update(factors)
+                existing_factors[insurance_type] = existing_type_factors
+        
+        risk_profile["risk_factors"] = existing_factors
+    
+    # Save to database
+    user.risk_profile = risk_profile
     db.commit()
     db.refresh(user)
+    
+    return UserProfileOut(
+        preferences=risk_profile.get("preferences"),
+        risk_factors=risk_profile.get("risk_factors")
+    )
 
-    return {"message": "User preferences updated successfully"}
+
+# Legacy endpoints for backward compatibility
+@router.get("/preferences")
+def get_preferences(
+    db: Session = Depends(get_db),
+    current_user_email: str = Depends(get_current_user_email),
+):
+    """Legacy endpoint - return preferences only."""
+    user = db.query(User).filter(User.email == current_user_email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    risk_profile = user.risk_profile if user.risk_profile else {}
+    return risk_profile.get("preferences", {})
+
+
+@router.put("/preferences")
+def update_preferences(
+    preferences: Dict[str, Any],
+    db: Session = Depends(get_db),
+    current_user_email: str = Depends(get_current_user_email),
+):
+    """Legacy endpoint - update preferences only."""
+    user = db.query(User).filter(User.email == current_user_email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    risk_profile = dict(user.risk_profile) if user.risk_profile else {}
+    risk_profile["preferences"] = preferences
+    
+    user.risk_profile = risk_profile
+    db.commit()
+    db.refresh(user)
+    
+    return risk_profile.get("preferences", {})
