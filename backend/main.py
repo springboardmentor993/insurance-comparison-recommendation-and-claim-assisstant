@@ -7,34 +7,41 @@ from models import User
 from schemas import SignupRequest
 from hashing import Hash
 
-# ✅ Import routers properly
+# ✅ Import routers
 from routers import (
     policies,
     login,
     risk_profile,
     recommendations,
     claims,
-    userpolicies
+    userpolicies,
+    admin  # ✅ NEW
 )
 
-app = FastAPI()
+app = FastAPI(
+    title="CoverMate API",
+    description="Insurance Comparison, Recommendation & Claim Assistant",
+    version="1.0.0"
+)
 
 # ✅ CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React frontend
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Include all routers
+# ✅ Include Routers
 app.include_router(policies.router)
 app.include_router(login.router)
 app.include_router(risk_profile.router)
 app.include_router(recommendations.router)
 app.include_router(claims.router)
 app.include_router(userpolicies.router)
+app.include_router(admin.router)  # ✅ NEW
+
 
 # ---------------------------------
 # SIGNUP ROUTE
@@ -42,15 +49,13 @@ app.include_router(userpolicies.router)
 @app.post("/signup")
 def signup(request: SignupRequest, db: Session = Depends(get_db)):
 
-    # Check if email already exists
     existing_user = db.query(User).filter(User.email == request.email).first()
+
     if existing_user:
         return {"message": "Email already registered"}
 
-    # Hash password
     hashed_password = Hash.hash_password(request.password)
 
-    # Create new user
     new_user = User(
         name=request.name,
         email=request.email,

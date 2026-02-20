@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from datetime import datetime, timedelta
 import random
 import string
 import os
@@ -17,12 +18,90 @@ router = APIRouter(
     tags=["Claims"]
 )
 
-
 # -----------------------------
 # GENERATE CLAIM NUMBER
 # -----------------------------
 def generate_claim_number():
     return "CLM-" + ''.join(random.choices(string.digits, k=6))
+
+
+# -----------------------------
+# FRAUD RULES ENGINE
+# -----------------------------
+def run_fraud_checks(db: Session, claim: models.Claims):
+
+    fraud_flags = []
+    high_severity_found = False
+
+    # Rule 1: Large Amount
+    if float(claim.amount_claimed) > 100000:
+        fraud_flags.append({
+            "rule_code": "HIGH_AMOUNT",
+            "severity": "high",
+            "details": "Claim amount exceeds 100000"
+        })
+        high_severity_found = True
+
+    # Rule 2: Suspicious Timing
+    user_policy = db.query(models.UserPolicies).filter(
+        models.UserPolicies.id == claim.user_policy_id
+    ).first()
+
+    if user_policy:
+        days_difference = (claim.incident_date - user_policy.start_date).days
+        if days_difference <= 7:
+            fraud_flags.append({
+                "rule_code": "SUSPICIOUS_TIMING",
+                "severity": "medium",
+                "details": "Claim filed within 7 days of policy start"
+            })
+
+    # Rule 3: Duplicate Claim Amount
+    duplicate_claim = db.query(models.Claims).filter(
+        models.Claims.user_policy_id == claim.user_policy_id,
+        models.Claims.amount_claimed == claim.amount_claimed,
+        models.Claims.id != claim.id
+    ).first()
+
+    if duplicate_claim:
+        fraud_flags.append({
+            "rule_code": "DUPLICATE_AMOUNT",
+            "severity": "medium",
+            "details": "Duplicate claim amount detected"
+        })
+
+    # Rule 4: Multiple Claims in 3 Days
+    three_days_ago = datetime.utcnow() - timedelta(days=3)
+
+    recent_claims = db.query(models.Claims).filter(
+        models.Claims.user_policy_id == claim.user_policy_id,
+        models.Claims.created_at >= three_days_ago,
+        models.Claims.id != claim.id
+    ).count()
+
+    if recent_claims >= 2:
+        fraud_flags.append({
+            "rule_code": "MULTIPLE_RECENT_CLAIMS",
+            "severity": "high",
+            "details": "Multiple claims filed within 3 days"
+        })
+        high_severity_found = True
+
+    # Insert Fraud Flags
+    for flag in fraud_flags:
+        new_flag = models.FraudFlags(
+            claim_id=claim.id,
+            rule_code=flag["rule_code"],
+            severity=flag["severity"],
+            details=flag["details"]
+        )
+        db.add(new_flag)
+
+    # Auto change status if high severity
+    if high_severity_found:
+        claim.status = "under_review"
+
+    db.commit()
 
 
 # -----------------------------
@@ -35,7 +114,6 @@ def create_claim(
     current_user: models.User = Depends(get_current_user)
 ):
 
-    # 🔒 Ensure policy belongs to logged-in user
     user_policy = (
         db.query(models.UserPolicies)
         .filter(
@@ -54,12 +132,14 @@ def create_claim(
         claim_type=request.claim_type,
         incident_date=request.incident_date,
         amount_claimed=request.amount_claimed,
-        status="draft"
+        status="submitted"
     )
 
     db.add(new_claim)
     db.commit()
     db.refresh(new_claim)
+
+    run_fraud_checks(db, new_claim)
 
     return {
         "id": new_claim.id,
@@ -69,7 +149,7 @@ def create_claim(
 
 
 # -----------------------------
-# GET CLAIMS FOR LOGGED-IN USER
+# GET CLAIMS FOR USER
 # -----------------------------
 @router.get("/")
 def get_user_claims(
@@ -84,7 +164,6 @@ def get_user_claims(
         .all()
     )
 
-    # ✅ Return clean JSON response
     return [
         {
             "id": claim.id,
@@ -138,7 +217,6 @@ def upload_claim_document(
 
         db.add(new_doc)
         db.commit()
-        db.refresh(new_doc)
 
         return {
             "message": "File uploaded successfully",
@@ -176,9 +254,7 @@ def update_claim_status(
 
     claim.status = request.status
     db.commit()
-    db.refresh(claim)
 
-    # 🔥 Send background email
     send_claim_status_email.delay(claim.id, claim.status)
 
     return {

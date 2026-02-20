@@ -11,6 +11,7 @@ router = APIRouter()
 
 @router.post("/login")
 def login(request: LoginRequest, db: Session = Depends(get_db)):
+
     user = db.query(User).filter(User.email == request.email).first()
 
     if not user:
@@ -20,6 +21,7 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
         )
 
     is_valid = Verify.verify_password(request.password, user.password)
+
     if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -28,9 +30,13 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
 
     access_token = create_access_token(data={"sub": user.email})
 
+    # ✅ Role flag without changing DB schema
+    is_admin = user.email == "satyn152@gmail.com"
+
     return {
         "access_token": access_token,
         "token_type": "bearer",
         "user_id": user.id,
-        "email": user.email
+        "email": user.email,
+        "is_admin": is_admin
     }

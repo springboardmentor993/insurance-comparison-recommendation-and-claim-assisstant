@@ -25,17 +25,17 @@ function Login({ onLoginSuccess, goToSignup }) {
         password: password.trim(),
       });
 
-      const { access_token, user_id } = response.data;
+      const { access_token, user_id, email: userEmail, is_admin } = response.data;
 
-      // ✅ Clear old session first
-      localStorage.removeItem("token");
-      localStorage.removeItem("user_id");
+      // Clear old session
+      localStorage.clear();
 
-      // ✅ Save new session
+      // Save session
       localStorage.setItem("token", access_token);
       localStorage.setItem("user_id", user_id);
+      localStorage.setItem("email", userEmail);
+      localStorage.setItem("is_admin", is_admin);  // ✅ ROLE STORED
 
-      // ✅ Move to policies page
       onLoginSuccess(user_id);
 
     } catch (err) {

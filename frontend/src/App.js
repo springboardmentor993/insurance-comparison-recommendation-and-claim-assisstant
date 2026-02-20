@@ -6,14 +6,17 @@ import RiskProfile from "./pages/RiskProfile";
 import Recommendations from "./pages/Recommendations";
 import UploadClaim from "./pages/UploadClaim";
 import MyClaims from "./pages/MyClaims";
+import AdminDashboard from "./pages/AdminDashboard";
+import ComparePage from "./pages/ComparePage";
 
 function App() {
   const [page, setPage] = useState("login");
   const [userId, setUserId] = useState(null);
   const [selectedClaimId, setSelectedClaimId] = useState(null);
+  const [comparePolicies, setComparePolicies] = useState([]);
   const [checkingSession, setCheckingSession] = useState(true);
 
-  // 🔐 Restore session on load
+  // Restore session on refresh
   useEffect(() => {
     const storedUserId = localStorage.getItem("user_id");
     const token = localStorage.getItem("token");
@@ -22,15 +25,13 @@ function App() {
       setUserId(storedUserId);
       setPage("policies");
     } else {
-      localStorage.removeItem("user_id");
-      localStorage.removeItem("token");
+      localStorage.clear();
       setPage("login");
     }
 
     setCheckingSession(false);
   }, []);
 
-  // ⏳ Prevent render while checking session
   if (checkingSession) {
     return <p style={{ textAlign: "center" }}>Loading...</p>;
   }
@@ -38,22 +39,25 @@ function App() {
   const token = localStorage.getItem("token");
   const isAuthenticated = !!token;
 
-  // 🔒 Global protection
+  // Protect routes
   if (!isAuthenticated && page !== "login" && page !== "signup") {
-    setPage("login");
-    return null;
+    return (
+      <Login
+        onLoginSuccess={(id) => {
+          setUserId(id);
+          setPage("policies");
+        }}
+        goToSignup={() => setPage("signup")}
+      />
+    );
   }
 
-  // ==========================
-  // PAGE ROUTING
-  // ==========================
-
   switch (page) {
+
     case "login":
       return (
         <Login
           onLoginSuccess={(id) => {
-            localStorage.setItem("user_id", id);
             setUserId(id);
             setPage("policies");
           }}
@@ -95,6 +99,21 @@ function App() {
         />
       );
 
+    case "admin":
+      return (
+        <AdminDashboard
+          onBack={() => setPage("policies")}
+        />
+      );
+
+    case "compare":
+      return (
+        <ComparePage
+          policies={comparePolicies}
+          onBack={() => setPage("policies")}
+        />
+      );
+
     default:
       return (
         <Policies
@@ -105,9 +124,13 @@ function App() {
             setPage("upload");
           }}
           goToClaims={() => setPage("claims")}
+          goToAdmin={() => setPage("admin")}
+          goToComparePage={(policies) => {
+            setComparePolicies(policies);
+            setPage("compare");
+          }}
           onLogout={() => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user_id");
+            localStorage.clear();
             setUserId(null);
             setPage("login");
           }}

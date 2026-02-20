@@ -7,23 +7,19 @@ function Policies({
   goToRiskProfile,
   goToRecommendations,
   goToUpload,
-  goToClaims
+  goToClaims,
+  goToAdmin,
+  goToComparePage
 }) {
   const [policies, setPolicies] = useState([]);
   const [userPolicies, setUserPolicies] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPolicies, setSelectedPolicies] = useState([]);
-  const [showCompare, setShowCompare] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const [coverage, setCoverage] = useState(100000);
-  const [riskLevel, setRiskLevel] = useState("medium");
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const token = localStorage.getItem("token");
+  const isAdmin = localStorage.getItem("is_admin") === "true";
 
-  // ================================
-  // FETCH POLICIES + USERPOLICIES
-  // ================================
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,12 +31,8 @@ function Policies({
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const policiesData = await policiesRes.json();
-        const userPoliciesData = await userPoliciesRes.json();
-
-        setPolicies(Array.isArray(policiesData) ? policiesData : []);
-        setUserPolicies(Array.isArray(userPoliciesData) ? userPoliciesData : []);
-
+        setPolicies(await policiesRes.json());
+        setUserPolicies(await userPoliciesRes.json());
       } catch (err) {
         console.error(err);
       } finally {
@@ -51,140 +43,149 @@ function Policies({
     fetchData();
   }, [token]);
 
-  // ================================
-  // PREMIUM CALCULATOR
-  // ================================
-  const getRiskMultiplier = () => {
-    if (riskLevel === "low") return 1.05;
-    if (riskLevel === "medium") return 1.1;
-    if (riskLevel === "high") return 1.2;
-    return 1;
-  };
+  const isOwned = (policyId) =>
+    userPolicies.some(up => Number(up.policy_id) === Number(policyId));
 
-  const calculatePremium = (basePremium) => {
-    return (
-      Number(basePremium) *
-      getRiskMultiplier() *
-      (coverage / 100000)
-    ).toFixed(2);
-  };
-
-  // ================================
-  // FILTER
-  // ================================
-  const filteredPolicies =
-    selectedCategory === "all"
-      ? policies
-      : policies.filter((p) => p.policy_type === selectedCategory);
-
-  // ================================
-  // SELECT FOR COMPARE
-  // ================================
-  const togglePolicy = (policy) => {
-    const exists = selectedPolicies.find((p) => p.id === policy.id);
+  const toggleSelect = (policy) => {
+    const exists = selectedPolicies.find(p => p.id === policy.id);
 
     if (exists) {
-      setSelectedPolicies(
-        selectedPolicies.filter((p) => p.id !== policy.id)
-      );
+      setSelectedPolicies(selectedPolicies.filter(p => p.id !== policy.id));
     } else {
-      if (selectedPolicies.length === 3) {
-        alert("Maximum 3 policies allowed");
-        return;
-      }
+      if (selectedPolicies.length >= 3)
+        return alert("Maximum 3 policies allowed");
       setSelectedPolicies([...selectedPolicies, policy]);
     }
   };
 
-  // ================================
-  // CREATE CLAIM (FIXED DYNAMIC)
-  // ================================
-  const handleCreateClaim = async (policyId) => {
-    try {
-      // 🔥 Find purchased policy
-      const userPolicy = userPolicies.find(
-        (up) => up.policy_id === policyId
-      );
+  const buyPolicy = async (policyId) => {
+    const response = await fetch(`${BASE_URL}/userpolicies/${policyId}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      if (!userPolicy) {
-        alert("You have not purchased this policy.");
-        return;
-      }
+    const data = await response.json();
+    if (!response.ok) return alert(data.detail);
 
-      const response = await fetch(`${BASE_URL}/claims/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          user_policy_id: userPolicy.id,
-          claim_type: "general",
-          incident_date: new Date().toISOString().split("T")[0],
-          amount_claimed: 1000,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.detail || "Claim creation failed");
-        return;
-      }
-
-      goToUpload(data.id);
-
-    } catch (error) {
-      console.error(error);
-      alert("Error creating claim");
-    }
+    alert("Policy Purchased Successfully");
+    window.location.reload();
   };
 
-  if (loading) return <p className="loading-text">Loading policies...</p>;
+  const createClaim = async (policyId) => {
+    const owned = userPolicies.find(
+      up => Number(up.policy_id) === Number(policyId)
+    );
+
+    if (!owned) return alert("Purchase policy first.");
+
+    const response = await fetch(`${BASE_URL}/claims/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        user_policy_id: owned.id,
+        claim_type: "general",
+        incident_date: new Date().toISOString().split("T")[0],
+        amount_claimed: 1000,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) return alert(data.detail);
+
+    goToUpload(data.id);
+  };
+
+  const filteredPolicies =
+    activeFilter === "all"
+      ? policies
+      : policies.filter(p => p.policy_type === activeFilter);
+
+  if (loading) return <p className="loading">Loading policies...</p>;
 
   return (
     <div className="policies-container">
 
-      <div className="policies-header">
+      <div className="top-bar">
         <h2>Insurance Policies</h2>
-        <div>
+        <div className="nav-buttons">
           <button onClick={goToRiskProfile}>Preferences</button>
           <button onClick={goToRecommendations}>Recommendations</button>
           <button onClick={goToClaims}>My Claims</button>
+          {isAdmin && <button onClick={goToAdmin}>Admin</button>}
           <button onClick={onLogout}>Logout</button>
         </div>
       </div>
 
+      {/* FILTER TABS */}
+      <div className="filter-tabs">
+        {["all", "health", "life", "travel", "auto", "home"].map(type => (
+          <button
+            key={type}
+            className={activeFilter === type ? "active-tab" : ""}
+            onClick={() => setActiveFilter(type)}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {selectedPolicies.length >= 2 && (
+        <div className="compare-banner">
+          <button
+            onClick={() => goToComparePage(selectedPolicies)}
+            className="compare-button"
+          >
+            Compare {selectedPolicies.length} Policies
+          </button>
+        </div>
+      )}
+
       <div className="policy-grid">
-        {filteredPolicies.map((policy) => {
-          const isSelected = selectedPolicies.some(
-            (p) => p.id === policy.id
-          );
+        {filteredPolicies.map(policy => {
+          const selected = selectedPolicies.some(p => p.id === policy.id);
 
           return (
             <div
               key={policy.id}
-              className={`policy-card ${isSelected ? "selected" : ""}`}
-              onClick={() => togglePolicy(policy)}
+              className={`policy-card ${selected ? "selected-card" : ""}`}
+              onClick={() => toggleSelect(policy)}
             >
-              <h4>{policy.title}</h4>
-              <p>Type: {policy.policy_type}</p>
-              <p>Base ₹{policy.premium}</p>
-              <p>Estimated ₹{calculatePremium(policy.premium)}</p>
+              <div className="card-header">
+                <h4>{policy.title}</h4>
+                <span className="policy-type">{policy.policy_type}</span>
+              </div>
 
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleCreateClaim(policy.id);
-                }}
+              <div className="price">₹{policy.premium}</div>
+
+              <div
+                className="card-actions"
+                onClick={(e) => e.stopPropagation()}
               >
-                Upload Claim
-              </button>
+                {!isOwned(policy.id) ? (
+                  <button
+                    className="buy-btn"
+                    onClick={() => buyPolicy(policy.id)}
+                  >
+                    Buy Policy
+                  </button>
+                ) : (
+                  <button className="owned-btn">Purchased</button>
+                )}
+
+                <button
+                  className="claim-btn"
+                  onClick={() => createClaim(policy.id)}
+                >
+                  Upload Claim
+                </button>
+              </div>
             </div>
           );
         })}
       </div>
-
     </div>
   );
 }

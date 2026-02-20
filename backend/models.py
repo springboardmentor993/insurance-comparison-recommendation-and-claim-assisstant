@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 
-
 class User(Base):
     __tablename__ = "users"
 
@@ -17,7 +16,7 @@ class User(Base):
     dob = Column(Date, nullable=False)
     risk_profile = Column(JSONB, nullable=True)
 
-    
+
 class Policy(Base):
     __tablename__ = "policies"
 
@@ -32,6 +31,7 @@ class Policy(Base):
     tnc_url = Column(String)
     created_at = Column(DateTime)
 
+
 class Recommendation(Base):
     __tablename__ = "recommendations"
 
@@ -41,6 +41,7 @@ class Recommendation(Base):
     score = Column(Integer)
     reason = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
+
 
 class UserPolicies(Base):
     __tablename__ = "userpolicies"
@@ -83,3 +84,28 @@ class ClaimDocuments(Base):
     uploaded_at = Column(TIMESTAMP, server_default=func.now())
 
     claim = relationship("Claims")
+
+
+# ✅ NEW FRAUD FLAGS MODEL
+class FraudFlags(Base):
+    __tablename__ = "fraudflags"
+
+    id = Column(Integer, primary_key=True, index=True)
+    claim_id = Column(Integer, ForeignKey("claims.id", ondelete="CASCADE"), nullable=False)
+    rule_code = Column(String(50), nullable=False)
+    severity = Column(String(20), nullable=False)
+    details = Column(Text)
+
+    created_at = Column(TIMESTAMP, server_default=func.now())
+
+    claim = relationship("Claims")
+
+class AdminLogs(Base):
+    __tablename__ = "adminlogs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    admin_id = Column(Integer, ForeignKey("users.id"))
+    action = Column(Text)
+    target_type = Column(String)
+    target_id = Column(Integer)
+    timestamp = Column(TIMESTAMP, server_default=func.now())

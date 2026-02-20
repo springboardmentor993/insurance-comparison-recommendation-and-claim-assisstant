@@ -1,0 +1,193 @@
+.admin-container {
+  padding: 60px;
+  background: #f4f6f9;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ================= HEADER ================= */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.admin-header h2 {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1e293b;
+  letter-spacing: -0.5px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.header-actions select,
+.header-actions button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.header-actions button {
+  background: #2563eb;
+  color: white;
+  border: none;
+}
+
+.header-actions button:hover {
+  background: #1d4ed8;
+}
+
+/* ================= GRID ================= */
+.claims-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 30px;
+}
+
+/* ================= CLAIM CARD ================= */
+.claim-card {
+  background: white;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+  transition: all 0.25s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.claim-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.1);
+}
+
+/* ================= TOP SECTION ================= */
+.claim-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.claim-top h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 5px;
+}
+
+.claim-top p {
+  font-size: 15px;
+  color: #475569;
+}
+
+/* ================= STATUS BADGE ================= */
+.status {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  background: #e2e8f0;
+  color: #334155;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.decision-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.decision-buttons button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.decision-buttons button:hover {
+  background: #e2e8f0;
+}
+
+/* ================= VIEW DOCUMENTS BUTTON ================= */
+.view-docs button {
+  margin-top: 20px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+}
+
+.view-docs button:hover {
+  background: #1d4ed8;
+}
+
+/* ================= DOCUMENTS ================= */
+.documents-wrapper {
+  margin-top: 20px;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.doc-grid {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.doc-card {
+  width: 140px;
+  height: 110px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  transition: transform 0.2s ease;
+}
+
+.doc-card:hover {
+  transform: scale(1.03);
+}
+
+.doc-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.doc-card a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

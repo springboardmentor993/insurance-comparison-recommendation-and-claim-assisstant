@@ -1,284 +1,150 @@
-/* ============================= */
-/* GLOBAL */
-/* ============================= */
-
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: #f4f7fb;
-}
-
 .policies-container {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 30px;
+  padding: 50px;
+  background: #f4f6fb;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
 }
 
-/* ============================= */
-/* HEADER */
-/* ============================= */
-
-.policies-header {
+.top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
 }
 
-.policies-header h2 {
-  margin: 0;
-  font-size: 26px;
-  color: #1e293b;
-}
-
-.policies-header button {
+.nav-buttons button {
   margin-left: 10px;
-  background: #2563eb;
-  color: white;
+  padding: 8px 14px;
   border: none;
-  padding: 8px 16px;
   border-radius: 6px;
+  background: #4e73df;
+  color: white;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-.policies-header button:hover {
-  background: #1d4ed8;
+.nav-buttons button:hover {
+  background: #2e59d9;
 }
 
-/* ============================= */
-/* CALCULATOR */
-/* ============================= */
-
-.calculator-box {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 25px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-}
-
-.calculator-row {
+/* FILTER TABS */
+.filter-tabs {
   display: flex;
-  gap: 40px;
-  margin-top: 10px;
+  gap: 12px;
+  margin-bottom: 30px;
 }
 
-.calculator-box input,
-.calculator-box select {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  margin-top: 6px;
-}
-
-/* ============================= */
-/* CATEGORY BUTTONS */
-/* ============================= */
-
-.category-buttons {
-  margin-bottom: 20px;
-}
-
-.category-buttons button {
-  margin-right: 8px;
+.filter-tabs button {
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: 1px solid #d1d3e2;
   background: white;
-  border: 1px solid #2563eb;
-  color: #2563eb;
-  padding: 7px 14px;
-  border-radius: 20px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-.category-buttons button.active {
-  background: #2563eb;
-  color: white;
+.filter-tabs button:hover {
+  background: #eef1ff;
 }
 
-/* ============================= */
-/* COMPARE BUTTON */
-/* ============================= */
-
-.compare-btn {
-  background: #2563eb;
+.active-tab {
+  background: #4e73df !important;
   color: white;
-  padding: 10px 18px;
-  border-radius: 6px;
+  border: none !important;
+}
+
+.compare-banner {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.compare-button {
+  padding: 12px 30px;
+  border-radius: 30px;
   border: none;
+  background: linear-gradient(135deg, #1cc88a, #17a673);
+  color: white;
+  font-weight: 600;
   cursor: pointer;
-  margin-bottom: 20px;
+  transition: 0.3s;
 }
 
-.compare-btn:disabled {
-  background: #9ca3af;
+.compare-button:hover {
+  transform: scale(1.05);
 }
-
-/* ============================= */
-/* POLICY GRID */
-/* ============================= */
 
 .policy-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 25px;
 }
 
-/* ============================= */
-/* POLICY CARD */
-/* ============================= */
-
 .policy-card {
   background: white;
-  padding: 22px;
-  border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-  transition: 0.25s ease;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
   cursor: pointer;
-  position: relative;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 
 .policy-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
 }
 
-.policy-card.selected {
-  border: 2px solid #2563eb;
-  background: #eef2ff;
+.selected-card {
+  border: 2px solid #4e73df;
+  box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.15);
 }
 
-.policy-card h4 {
-  font-size: 18px;
-  margin-bottom: 12px;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.policy-card p {
-  margin: 6px 0;
-  font-size: 15px;
+.policy-type {
+  font-size: 13px;
+  color: #6c757d;
+  text-transform: uppercase;
 }
 
-/* ============================= */
-/* UPLOAD BUTTON */
-/* ============================= */
-
-.policy-card button {
-  margin-top: 15px;
-  background: #2563eb;
-  color: white;
-  width: 100%;
-  border: none;
-  padding: 9px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.policy-card button:hover {
-  background: #1d4ed8;
-}
-
-/* ============================= */
-/* COMPARISON VIEW */
-/* ============================= */
-
-.comparison-wrapper {
-  margin-top: 20px;
-}
-
-.comparison-title {
-  font-size: 22px;
-  margin-bottom: 20px;
-}
-
-/* Comparison table style */
-
-.comparison-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-}
-
-.comparison-table th,
-.comparison-table td {
-  padding: 14px;
-  text-align: center;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.comparison-table th {
-  background: #2563eb;
-  color: white;
-  font-weight: 500;
-}
-
-.comparison-table tr:last-child td {
-  border-bottom: none;
-}
-
-/* ============================= */
-/* BACK BUTTON */
-/* ============================= */
-
-.back-btn {
-  margin-top: 20px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 9px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.back-btn:hover {
-  background: #1d4ed8;
-}
-
-.comparison-wrapper {
-  margin-top: 30px;
-}
-
-.comparison-title {
+.price {
   font-size: 24px;
-  margin-bottom: 20px;
+  font-weight: 700;
+  margin: 20px 0;
 }
 
-.comparison-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+.card-actions {
+  display: flex;
+  gap: 10px;
 }
 
-.comparison-table th {
-  background: #2563eb;
-  color: white;
-  padding: 14px;
-  font-weight: 500;
-}
-
-.comparison-table td {
-  padding: 14px;
-  border-bottom: 1px solid #e5e7eb;
-  text-align: center;
-}
-
-.comparison-table td:first-child {
-  font-weight: 600;
-  background: #f8fafc;
-}
-
-.back-btn {
-  margin-top: 20px;
-  background: #2563eb;
-  color: white;
+.buy-btn {
+  flex: 1;
+  background: #4e73df;
   border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
   cursor: pointer;
 }
 
-.back-btn:hover {
-  background: #1d4ed8;
+.claim-btn {
+  flex: 1;
+  background: #858796;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
+}
+
+.owned-btn {
+  flex: 1;
+  background: #1cc88a;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
 }
