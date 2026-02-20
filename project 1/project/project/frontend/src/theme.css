@@ -1,0 +1,101 @@
+/* =========================
+   INSURANCE THEME (GLOBAL)
+========================= */
+
+:root {
+  --primary: #2563eb;     /* blue */
+  --secondary: #0ea5a4;   /* teal */
+  --accent: #22c55e;      /* green */
+  --bg-light: #f8fafc;
+  --card-bg: #ffffff;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+}
+
+/* Global body */
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #e0f2fe, #f0fdfa);
+  color: var(--text-dark);
+}
+
+/* Headings */
+h1, h2, h3 {
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+}
+
+.btn-outline {
+  background: white;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Cards */
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+  border: 1px solid var(--border);
+}
+
+/* Inputs */
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  outline: none;
+  margin-top: 6px;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary);
+}
+
+/* Page container */
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Section titles */
+.section-title {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+
+/* Badge */
+.badge {
+  background: #dcfce7;
+  color: #166534;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
