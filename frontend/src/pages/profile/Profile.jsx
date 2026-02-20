@@ -20,16 +20,23 @@ export const Profile = () => {
     });
 
     const [preferences, setPreferences] = useState({
-        min_budget: '',
-        max_budget: '',
-        preferred_types: [],
+        budget_min: '',
+        budget_max: '',
+        preferred_policy_types: [],
     });
 
+    // Grouped by insurance type to match backend schema
     const [riskFactors, setRiskFactors] = useState({
-        health_issues: '',
-        occupation: '',
-        smoker: false,
-        vehicle_age: '',
+        health: {
+            medical_history: '',
+            smoking_status: 'non_smoker',
+        },
+        life: {
+            occupation_risk: 'medium',
+        },
+        auto: {
+            vehicle_age: '',
+        }
     });
 
     const [policies, setPolicies] = useState([]);
@@ -41,53 +48,122 @@ export const Profile = () => {
     const fetchProfileData = async () => {
         setLoading(true);
         try {
-            const data = await profileService.getProfile();
+            // Fetch both basic info and extended profile data in parallel
+            const [basicInfo, profileData] = await Promise.all([
+                profileService.getMe(),
+                profileService.getProfile()
+            ]);
 
             setFormData({
-                name: data.name || '',
-                email: data.email || '',
-                dob: data.dob ? data.dob.split('T')[0] : '',
+                name: basicInfo.name || '',
+                email: basicInfo.email || '',
+                dob: basicInfo.dob ? basicInfo.dob.split('T')[0] : '',
             });
 
+            // Map backend preferences to state
+            const prefs = profileData.preferences || {};
             setPreferences({
-                min_budget: data.preferences?.min_budget || '',
-                max_budget: data.preferences?.max_budget || '',
-                preferred_types: data.preferences?.preferred_types || [],
+                budget_min: prefs.budget_min || '',
+                budget_max: prefs.budget_max || '',
+                preferred_policy_types: prefs.preferred_policy_types || [],
             });
 
+            // Map backend risk factors to state
+            const risks = data.risk_factors || {};
+
+            // Handle potentially flat or missing data structure gracefully
             setRiskFactors({
-                health_issues: data.risk_factors?.health_issues || '',
-                occupation: data.risk_factors?.occupation || '',
-                smoker: data.risk_factors?.smoker || false,
-                vehicle_age: data.risk_factors?.vehicle_age || '',
+                health: {
+                    medical_history: Array.isArray(risks.health?.medical_history)
+                        ? risks.health.medical_history.join(', ')
+                        : (risks.health?.medical_history || ''),
+                    smoking_status: risks.health?.smoking_status || 'non_smoker',
+                },
+                life: {
+                    occupation_risk: risks.life?.occupation_risk || 'medium',
+                },
+                auto: {
+                    vehicle_age: risks.auto?.car_age_years || '',
+                }
             });
 
             setPolicies(data.policies || []);
         } catch (err) {
-            toast.error('Failed to load profile data');
+            console.error("Error loading profile:", err);
+            // Don't show error on 404 (user might just not have a profile yet)
+            if (err.response && err.response.status !== 404) {
+                toast.error('Failed to load profile data');
+            }
         } finally {
             setLoading(false);
         }
     };
 
-    const handleInputChange = (e, setter, data) => {
-        const { name, value, type, checked } = e.target;
-        setter({
-            ...data,
-            [name]: type === 'checkbox' ? checked : value,
+    const handlePrefInputChange = (e) => {
+        const { name, value } = e.target;
+        setPreferences({
+            ...preferences,
+            [name]: value,
         });
     };
 
+    const handleHealthChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setRiskFactors(prev => ({
+            ...prev,
+            health: {
+                ...prev.health,
+                [name]: type === 'checkbox'
+                    ? (checked ? 'regular' : 'non_smoker') // simple bool to enum mapping for now
+                    : value
+            }
+        }));
+    };
+
+    const handleLifeChange = (e) => {
+        const { name, value } = e.target;
+        setRiskFactors(prev => ({
+            ...prev,
+            life: {
+                ...prev.life,
+                [name]: value
+            }
+        }));
+    };
+
+    const handleAutoChange = (e) => {
+        const { name, value } = e.target;
+        setRiskFactors(prev => ({
+            ...prev,
+            auto: {
+                ...prev.auto,
+                [name]: value
+            }
+        }));
+    };
+
+    // Checkbox handler for smoker specific logic
+    const handleSmokerChange = (e) => {
+        const isSmoker = e.target.checked;
+        setRiskFactors(prev => ({
+            ...prev,
+            health: {
+                ...prev.health,
+                smoking_status: isSmoker ? 'regular' : 'non_smoker'
+            }
+        }));
+    };
+
     const handlePrefTypeToggle = (type) => {
-        if (preferences.preferred_types.includes(type)) {
+        if (preferences.preferred_policy_types.includes(type)) {
             setPreferences({
                 ...preferences,
-                preferred_types: preferences.preferred_types.filter(t => t !== type),
+                preferred_policy_types: preferences.preferred_policy_types.filter(t => t !== type),
             });
         } else {
             setPreferences({
                 ...preferences,
-                preferred_types: [...preferences.preferred_types, type],
+                preferred_policy_types: [...preferences.preferred_policy_types, type],
             });
         }
     };
@@ -95,21 +171,39 @@ export const Profile = () => {
     const handleSavePreferences = async () => {
         setSaving(true);
         try {
-            await profileService.updateProfile({
+            // Construct payload matching backend UserProfileUpdate schema
+            const payload = {
                 preferences: {
-                    min_budget: parseFloat(preferences.min_budget) || null,
-                    max_budget: parseFloat(preferences.max_budget) || null,
-                    preferred_types: preferences.preferred_types.length > 0 ? preferences.preferred_types : null,
+                    budget_min: parseFloat(preferences.budget_min) || null,
+                    budget_max: parseFloat(preferences.budget_max) || null,
+                    preferred_policy_types: preferences.preferred_policy_types.length > 0
+                        ? preferences.preferred_policy_types
+                        : null,
                 },
                 risk_factors: {
-                    health_issues: riskFactors.health_issues || null,
-                    occupation: riskFactors.occupation || null,
-                    smoker: riskFactors.smoker,
-                    vehicle_age: riskFactors.vehicle_age ? parseFloat(riskFactors.vehicle_age) : null,
+                    health: {
+                        medical_history: riskFactors.health.medical_history
+                            ? riskFactors.health.medical_history.split(',').map(s => s.trim()).filter(Boolean)
+                            : [],
+                        smoking_status: riskFactors.health.smoking_status,
+                    },
+                    life: {
+                        occupation_risk: riskFactors.life.occupation_risk,
+                    },
+                    auto: {
+                        car_age_years: riskFactors.auto.vehicle_age
+                            ? parseInt(riskFactors.auto.vehicle_age)
+                            : null,
+                    }
                 },
-            });
+            };
+
+            await profileService.updateProfile(payload);
             toast.success('Preferences updated successfully!');
+            // Reload to ensure state is in sync
+            fetchProfileData();
         } catch (err) {
+            console.error("Save error:", err);
             toast.error('Failed to update preferences');
         } finally {
             setSaving(false);
@@ -153,8 +247,8 @@ export const Profile = () => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all font-medium ${activeTab === tab.id
-                                        ? 'bg-blue-600 text-white'
-                                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                                     }`}
                             >
                                 <Icon size={18} />
@@ -250,18 +344,18 @@ export const Profile = () => {
                             <Input
                                 label="Minimum Budget (₹)"
                                 type="number"
-                                name="min_budget"
+                                name="budget_min"
                                 placeholder="e.g., 5000"
-                                value={preferences.min_budget}
-                                onChange={(e) => handleInputChange(e, setPreferences, preferences)}
+                                value={preferences.budget_min}
+                                onChange={handlePrefInputChange}
                             />
                             <Input
                                 label="Maximum Budget (₹)"
                                 type="number"
-                                name="max_budget"
+                                name="budget_max"
                                 placeholder="e.g., 20000"
-                                value={preferences.max_budget}
-                                onChange={(e) => handleInputChange(e, setPreferences, preferences)}
+                                value={preferences.budget_max}
+                                onChange={handlePrefInputChange}
                             />
                         </div>
 
@@ -274,9 +368,9 @@ export const Profile = () => {
                                     <button
                                         key={type}
                                         onClick={() => handlePrefTypeToggle(type)}
-                                        className={`px-4 py-2 rounded-lg border-2 transition-all capitalize ${preferences.preferred_types.includes(type)
-                                                ? 'border-blue-500 bg-blue-500/20 text-blue-400'
-                                                : 'border-slate-600 text-slate-400 hover:border-slate-500'
+                                        className={`px-4 py-2 rounded-lg border-2 transition-all capitalize ${preferences.preferred_policy_types.includes(type)
+                                            ? 'border-blue-500 bg-blue-500/20 text-blue-400'
+                                            : 'border-slate-600 text-slate-400 hover:border-slate-500'
                                             }`}
                                     >
                                         {type}
@@ -299,43 +393,61 @@ export const Profile = () => {
                         Help us provide better recommendations by sharing your risk factors
                     </p>
                     <div className="space-y-6 max-w-2xl">
-                        <Input
-                            label="Health Issues (if any)"
-                            name="health_issues"
-                            placeholder="e.g., Diabetes, Hypertension"
-                            value={riskFactors.health_issues}
-                            onChange={(e) => handleInputChange(e, setRiskFactors, riskFactors)}
-                        />
-
-                        <Input
-                            label="Occupation"
-                            name="occupation"
-                            placeholder="e.g., Software Engineer"
-                            value={riskFactors.occupation}
-                            onChange={(e) => handleInputChange(e, setRiskFactors, riskFactors)}
-                        />
-
-                        <Input
-                            label="Vehicle Age (years)"
-                            type="number"
-                            name="vehicle_age"
-                            placeholder="e.g., 3"
-                            value={riskFactors.vehicle_age}
-                            onChange={(e) => handleInputChange(e, setRiskFactors, riskFactors)}
-                        />
-
-                        <div className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                name="smoker"
-                                id="smoker"
-                                checked={riskFactors.smoker}
-                                onChange={(e) => handleInputChange(e, setRiskFactors, riskFactors)}
-                                className="w-5 h-5 rounded border-2 border-blue-500 checked:bg-blue-600 cursor-pointer"
+                        {/* Health Section */}
+                        <div className="border-b border-slate-700 pb-4 mb-4">
+                            <h3 className="text-lg font-semibold text-white mb-3">Health</h3>
+                            <Input
+                                label="Medical History (comma separated)"
+                                name="medical_history"
+                                placeholder="e.g., Diabetes, Hypertension"
+                                value={riskFactors.health.medical_history}
+                                onChange={handleHealthChange}
+                                className="mb-4"
                             />
-                            <label htmlFor="smoker" className="text-slate-300">
-                                I am a smoker
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="checkbox"
+                                    name="smoking_status"
+                                    id="smoker"
+                                    checked={riskFactors.health.smoking_status === 'regular'}
+                                    onChange={handleSmokerChange}
+                                    className="w-5 h-5 rounded border-2 border-blue-500 checked:bg-blue-600 cursor-pointer"
+                                />
+                                <label htmlFor="smoker" className="text-slate-300">
+                                    I am a regular smoker
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Life Section */}
+                        <div className="border-b border-slate-700 pb-4 mb-4">
+                            <h3 className="text-lg font-semibold text-white mb-3">Life & Occupation</h3>
+                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                                Occupation Risk Level
                             </label>
+                            <select
+                                name="occupation_risk"
+                                value={riskFactors.life.occupation_risk}
+                                onChange={handleLifeChange}
+                                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                            >
+                                <option value="low">Low (Office/Desk Job)</option>
+                                <option value="medium">Medium (Field work, Sales)</option>
+                                <option value="high">High (Manual labor, Hazardous)</option>
+                            </select>
+                        </div>
+
+                        {/* Auto Section */}
+                        <div className="pb-4">
+                            <h3 className="text-lg font-semibold text-white mb-3">Auto</h3>
+                            <Input
+                                label="Vehicle Age (years)"
+                                type="number"
+                                name="vehicle_age"
+                                placeholder="e.g., 3"
+                                value={riskFactors.auto.vehicle_age}
+                                onChange={handleAutoChange}
+                            />
                         </div>
 
                         <Button variant="primary" onClick={handleSavePreferences} loading={saving}>
