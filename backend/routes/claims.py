@@ -194,7 +194,13 @@ def get_claim_details(
         if not user_policy:
             raise HTTPException(status_code=403, detail="Not authorized to view this claim")
     
-    return get_claim_with_details(claim_id, db)
+    claim_details = get_claim_with_details(claim_id, db)
+    
+    # Filter out fraud flags for non-admins
+    if current_user.role != "admin":
+        claim_details["fraud_flags"] = []
+        
+    return claim_details
 
 
 @router.post("/{claim_id}/documents", status_code=202)

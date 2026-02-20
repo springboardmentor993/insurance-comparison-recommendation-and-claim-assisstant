@@ -6,10 +6,12 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import claimService from '../../services/claimService';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const ClaimDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [claim, setClaim] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -191,8 +193,8 @@ export const ClaimDetails = () => {
                         )}
                     </Card>
 
-                    {/* Fraud Flags */}
-                    {claim.fraud_flags && claim.fraud_flags.length > 0 && (
+                    {/* Fraud Flags - Only visible to admins */}
+                    {user?.role === 'admin' && claim.fraud_flags && claim.fraud_flags.length > 0 && (
                         <Card glass hover={false} className="border-2 border-red-500/30">
                             <div className="flex items-start gap-4">
                                 <AlertTriangle className="h-6 w-6 text-red-400 flex-shrink-0" />
