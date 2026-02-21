@@ -14,15 +14,15 @@ def save_risk_profile(
     user_id: int,
     request: RiskProfileRequest,
     db: Session = Depends(get_db),
-    current_user: str = Depends(get_current_user)
+    current_user: User = Depends(get_current_user)   # ✅ FIXED TYPE
 ):
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # 🔐 ACCESS CHECK
-    if user.email != current_user:
+    # 🔐 ACCESS CHECK (FIXED)
+    if user.email != current_user.email:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to modify this profile"
@@ -59,16 +59,15 @@ def save_risk_profile(
 def get_risk_profile(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user: str = Depends(get_current_user)
+    current_user: User = Depends(get_current_user)   # ✅ FIXED TYPE
 ):
-
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # 🔐 ACCESS CHECK
-    if user.email != current_user:
+    # 🔐 ACCESS CHECK (FIXED)
+    if user.email != current_user.email:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to view this profile"

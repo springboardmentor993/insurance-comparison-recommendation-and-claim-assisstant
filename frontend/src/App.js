@@ -8,6 +8,7 @@ import UploadClaim from "./pages/UploadClaim";
 import MyClaims from "./pages/MyClaims";
 import AdminDashboard from "./pages/AdminDashboard";
 import ComparePage from "./pages/ComparePage";
+import { BASE_URL } from "./api";
 
 function App() {
   const [page, setPage] = useState("login");
@@ -16,20 +17,43 @@ function App() {
   const [comparePolicies, setComparePolicies] = useState([]);
   const [checkingSession, setCheckingSession] = useState(true);
 
-  // Restore session on refresh
+  // ✅ SAFE SESSION RESTORE
   useEffect(() => {
-    const storedUserId = localStorage.getItem("user_id");
-    const token = localStorage.getItem("token");
+    const checkSession = async () => {
+      const storedUserId = localStorage.getItem("user_id");
+      const token = localStorage.getItem("token");
 
-    if (storedUserId && token) {
-      setUserId(storedUserId);
-      setPage("policies");
-    } else {
-      localStorage.clear();
-      setPage("login");
-    }
+      if (!storedUserId || !token) {
+        localStorage.clear();
+        setPage("login");
+        setCheckingSession(false);
+        return;
+      }
 
-    setCheckingSession(false);
+      try {
+        // Verify token with backend
+        const response = await fetch(`${BASE_URL}/policies`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Invalid session");
+        }
+
+        setUserId(storedUserId);
+        setPage("policies");
+
+      } catch (error) {
+        localStorage.clear();
+        setPage("login");
+      } finally {
+        setCheckingSession(false);
+      }
+    };
+
+    checkSession();
   }, []);
 
   if (checkingSession) {

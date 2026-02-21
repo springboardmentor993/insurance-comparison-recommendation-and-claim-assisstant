@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AdminDashboard.css";
+import { BASE_URL } from "../api";
 
 const AdminDashboard = ({ onBack }) => {
   const [claims, setClaims] = useState([]);
@@ -18,24 +19,66 @@ const AdminDashboard = ({ onBack }) => {
   const loadClaims = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8000/admin/claims",
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${BASE_URL}/admin/claims`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      setClaims(res.data);
+
+      setClaims(Array.isArray(res.data) ? res.data : []);
     } catch {
       alert("Failed to load claims");
+      setClaims([]);
     } finally {
       setLoading(false);
     }
   };
 
   const updateStatus = async (id, status) => {
-    await axios.put(
-      `http://localhost:8000/claims/${id}/status`,
-      { status },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    loadClaims();
+    try {
+      await axios.put(
+        `${BASE_URL}/claims/${id}/status`,
+        { status },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      loadClaims();
+    } catch {
+      alert("Failed to update status");
+    }
+  };
+
+  // ✅ FINAL FIXED EXPORT FUNCTION
+  const exportCSV = async () => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/admin/export-claims`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Export failed");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "claims_export.csv";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+    } catch {
+      alert("Failed to export CSV");
+    }
   };
 
   const sortedClaims = [...claims].sort((a, b) => {
@@ -55,7 +98,14 @@ const AdminDashboard = ({ onBack }) => {
             <option value="date">Sort by Date</option>
             <option value="amount">Sort by Amount</option>
           </select>
-          <button onClick={onBack}>Back</button>
+
+          <button onClick={exportCSV}>
+            Export CSV
+          </button>
+
+          <button onClick={onBack}>
+            Back
+          </button>
         </div>
       </div>
 

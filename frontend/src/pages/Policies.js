@@ -31,10 +31,17 @@ function Policies({
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        setPolicies(await policiesRes.json());
-        setUserPolicies(await userPoliciesRes.json());
+        const policiesData = await policiesRes.json();
+        const userPoliciesData = await userPoliciesRes.json();
+
+        // ✅ FIX: Ensure array
+        setPolicies(Array.isArray(policiesData) ? policiesData : []);
+        setUserPolicies(Array.isArray(userPoliciesData) ? userPoliciesData : []);
+
       } catch (err) {
-        console.error(err);
+        console.error("Fetch error:", err);
+        setPolicies([]);
+        setUserPolicies([]);
       } finally {
         setLoading(false);
       }
@@ -98,10 +105,12 @@ function Policies({
     goToUpload(data.id);
   };
 
-  const filteredPolicies =
-    activeFilter === "all"
-      ? policies
-      : policies.filter(p => p.policy_type === activeFilter);
+  // ✅ FIX: Always ensure filteredPolicies is array
+  const filteredPolicies = Array.isArray(policies)
+    ? (activeFilter === "all"
+        ? policies
+        : policies.filter(p => p.policy_type === activeFilter))
+    : [];
 
   if (loading) return <p className="loading">Loading policies...</p>;
 
@@ -119,7 +128,6 @@ function Policies({
         </div>
       </div>
 
-      {/* FILTER TABS */}
       <div className="filter-tabs">
         {["all", "health", "life", "travel", "auto", "home"].map(type => (
           <button

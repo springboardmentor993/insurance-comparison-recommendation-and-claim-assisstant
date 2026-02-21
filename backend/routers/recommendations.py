@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime
 
@@ -13,7 +13,7 @@ router = APIRouter()
 def get_recommendations(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user: str = Depends(get_current_user)
+    current_user: User = Depends(get_current_user)   # ✅ FIXED TYPE
 ):
 
     # 1️⃣ Get user
@@ -21,9 +21,12 @@ def get_recommendations(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # 2️⃣ Auth check
-    if user.email != current_user:
-        raise HTTPException(status_code=403, detail="Not authorized")
+    # 2️⃣ Auth check (FIXED)
+    if user.email != current_user.email:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized"
+        )
 
     # 3️⃣ Risk profile check
     if not user.risk_profile:
@@ -35,7 +38,7 @@ def get_recommendations(
     age = risk.get("age", 0)
     health_condition = risk.get("health_condition", "normal")
 
-    # 🔥 4️⃣ AUTO CALCULATE RISK LEVEL
+    # 🔥 AUTO CALCULATE RISK LEVEL
     if age > 50 or dependents >= 3 or health_condition.lower() == "critical":
         risk_level = "high"
     else:
@@ -109,7 +112,7 @@ def get_recommendations(
     recommendations.sort(key=lambda x: x["score"], reverse=True)
 
     return {
-        "risk_level": risk_level,   # 🔥 UI can show this
+        "risk_level": risk_level,
         "annual_income": annual_income,
         "top_recommendations": recommendations[:5]
     }
