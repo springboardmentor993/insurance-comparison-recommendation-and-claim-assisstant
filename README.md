@@ -280,6 +280,3 @@ Pusuluri Lakshmi Pujakshya
 insurance-comparison-recommendation-and-claim-assisstant project
 Python Technology Stack 
 Intern@Infosys Springboard 6.0
-
-
-
