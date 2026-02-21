@@ -1,0 +1,71 @@
+.policy-page {
+  padding: 40px;
+  background: linear-gradient(135deg,#f3f4f8,#e9ecf3);
+  min-height: 100vh;
+}
+
+.policy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.policy-card {
+  background: white;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  transition: all 0.25s ease;
+}
+
+.policy-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
+
+.policy-header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.policy-header h2 {
+  margin: 0;
+  color: #1e3c72;
+}
+
+.policy-header h3 {
+  margin: 5px 0;
+  color: #555;
+}
+
+.price-box {
+  background: #ff6ec7;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.policy-info {
+  margin-top: 12px;
+  font-size: 16px;
+}
+
+.policy-features {
+  margin-top: 12px;
+  color: #444;
+}
+
+.view-btn {
+  margin-top: 15px;
+  background: linear-gradient(135deg,#1e3c72,#ff6ec7);
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}

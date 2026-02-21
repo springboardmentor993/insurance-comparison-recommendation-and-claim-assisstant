@@ -1,0 +1,86 @@
+.rec-page {
+  padding: 40px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.rec-box {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.rec-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+  background: #e5e7eb;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.rec-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rec-form input,
+.rec-form select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.rec-form button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.best-box {
+  background: #ecfdf5;
+  border-left: 6px solid #10b981;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.policy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 20px;
+}
+
+.policy-card {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.price {
+  background: #fde68a;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.score {
+  float: right;
+  background: purple;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 8px;
+}
+
+.stars {
+  color: gold;
+  font-size: 18px;
+}

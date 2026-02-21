@@ -1,0 +1,47 @@
+.claims-page {
+  padding: 40px;
+}
+
+.claim-card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.file-btn {
+  background: #1e3c72;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.status {
+  padding: 8px 15px;
+  border-radius: 6px;
+  color: white;
+  text-transform: capitalize;
+}
+
+.status.submitted { background: orange; }
+.status.approved { background: green; }
+.status.rejected { background: red; }
+.status.under_review { background: purple; }
+.status.paid { background: teal; }
+
+.file-page {
+  padding: 50px;
+}
+
+.submit-btn {
+  background: green;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+}
