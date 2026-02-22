@@ -1,96 +1,123 @@
- 🛡️ TrustSure – Insurance Comparison, Recommendation & Claim Assistant
+# 🛡️ TrustSure – Insurance Comparison, Recommendation & Claim Assistant
 
 TrustSure is a full-stack Insurance Management System built using **FastAPI, PostgreSQL, and React.js**.
 
-It allows users to:
-- Compare multiple insurance policies
-- Filter policies using advanced criteria
-- Get personalized policy recommendations
-- File and track insurance claims
-- Detect suspicious claims using fraud rules
-- Admin monitor platform activity
+It simulates a real-world digital insurance workflow including:
 
-This project simulates a real-world digital insurance workflow including policy selection, underwriting logic, claims lifecycle, and fraud monitoring.
+- Policy comparison
+- Personalized recommendations
+- Claims lifecycle management
+- Fraud detection engine
+- Admin monitoring dashboard
+- Email notification system
+
+This project represents a production-style insurance platform architecture.
 
 ---
 
-🚀 Tech Stack
+## 🚀 Tech Stack
 
- 🔹 Backend
+### 🔹 Backend
 - FastAPI
 - SQLAlchemy ORM
 - PostgreSQL
 - Pydantic
-- JWT Authentication
+- JWT Authentication (User & Admin)
+- Fraud Rules Engine
 
- 🔹 Frontend
+### 🔹 Frontend
 - React.js
-- CSS3
-- Responsive UI
+- CSS3 (Custom UI)
+- Responsive Layout
 - Dynamic filtering & comparison
+- Admin Analytics Dashboard
+- EmailJS Integration (Email Notifications)
 
-🔹 Database
+### 🔹 Database
 - PostgreSQL
 - Normalized relational schema
-- JSONB risk profile storage
+- Foreign key constraints
+- JSON-based risk profile storage
 - Fraud flag tracking
 
+---
 
+# 🧠 System Workflow
 
-🧠 How the System Works
+---
 
- 1️⃣ User Authentication
-Users register and login using JWT authentication.
-Each user has:
-- Profile details
-- Risk profile
-- Preferences
-
-
-
- 2️⃣ Policy Catalog & Filtering
+## 1️⃣ User Authentication
 
 Users can:
-- Browse all policies
-- Filter by:
+
+- Register
+- Login (JWT-based)
+- Maintain profile & preferences
+- Store risk profile
+
+Admin authentication is handled separately with role-based JWT.
+
+---
+
+## 2️⃣ Policy Catalog & Advanced Filtering
+
+Users can:
+
+- Browse available policies
+- Filter policies using:
   - Policy Type
   - Maximum Premium
   - Minimum Coverage
   - Maximum Term
   - Minimum Claim Ratio
 
-Policies are dynamically fetched from backend APIs.
+Filtering is dynamically handled through backend APIs.
 
+---
 
- 3️⃣ Policy Comparison
+## 3️⃣ Multi-Policy Comparison
 
 Users can:
+
 - Select up to 4 policies
-- Compare features side-by-side
-- View professional comparison summary including:
+- Compare side-by-side
+- View professional comparison summary:
   - Best Budget Option
   - Highest Coverage
   - Best Claim Ratio
   - Strategic Recommendation
 
+---
 
+## 4️⃣ Personalized Recommendation Engine
 
- 4️⃣ Recommendation Engine
+The recommendation engine:
 
-The system:
 - Reads user risk profile
-- Scores policies
-- Generates personalized shortlist
-- Stores results in Recommendations table
+- Scores policies using weighted scoring logic
+- Ranks policies
+- Returns best match
+- Stores recommendations in database
 
- 5️⃣ Claims Management
+Scoring Factors:
+- Coverage Weight
+- Claim Ratio Weight
+- Customer Rating
+- Premium Optimization
+- Risk Profile Weight Adjustment
+
+---
+
+## 5️⃣ Claims Management System
 
 Users can:
-- File a new claim
+
+- File new claims
 - Upload documents
 - Track claim status
 
 Claim lifecycle states:
+
 - Draft
 - Submitted
 - Under Review
@@ -98,185 +125,269 @@ Claim lifecycle states:
 - Rejected
 - Paid
 
- 6️⃣ Fraud Detection
+---
 
-The system checks:
+## 6️⃣ Fraud Detection Engine
+
+The system automatically detects:
+
 - Duplicate documents
 - Suspicious claim amounts
-- Unusual timing patterns
+- Abnormal timing patterns
 
-If detected, a FraudFlag is created with severity:
-- Low
-- Medium
-- High
+If detected:
 
-Admins can monitor flagged claims.
+- A FraudFlag is created
+- Severity assigned:
+  - Low
+  - Medium
+  - High
 
- 
-🏗️ Architecture Overview
+Admins can monitor all flagged claims.
 
-User (React Frontend)
+---
+
+## 7️⃣ Admin Dashboard
+
+Admin capabilities include:
+
+- View total policies purchased
+- View approved / rejected claims
+- Monitor fraud cases
+- Review flagged claims
+- View analytics summary
+- Send real-time email notifications to users
+
+Admin authentication is completely separate from user authentication.
+
+---
+
+## 8️⃣ Email Notification System
+
+Admin can:
+
+- Send custom email notifications
+- Notify users regarding claims
+- Send policy updates
+
+Email integration handled via EmailJS service.
+
+---
+
+# 🏗️ Architecture Overview
+
+```
+
+React Frontend
 ↓
-FastAPI Backend (REST APIs)
+FastAPI REST APIs
 ↓
 PostgreSQL Database
 
-Frontend communicates with backend APIs.
-Backend handles business logic and database operations.
+```
 
-# 📂 Project Structure
+Frontend communicates with backend via REST APIs.  
+Backend handles business logic, validation, fraud rules, and database operations.
+
+---
+
+# 📂 Updated Project Structure
+
+```
 
 insurance-comparison-recommendation-and-claim-assistant/
 
 ├── backend/
 │   ├── main.py
 │   ├── auth.py
+│   ├── admin_auth.py
 │   ├── policies.py
 │   ├── claims.py
+│   ├── recommend.py
 │   ├── models.py
 │   ├── schemas.py
 │   ├── database.py
-│   ├── recommend.py
-│   └── seed_policies.py
+│   ├── seed_policies.py
 │
 ├── frontend/
-│   ├── src/
 │   ├── public/
-│   └── package.json
-│
-├── database/
-│   ├── schema.sql
-│   └── trustsure.sql
+│   │   └── login.html
+│   │
+│   ├── src/
+│       ├── pages/
+│       │   ├── UserSignup.js
+│       │   ├── AdminSignup.js
+│       │   ├── AdminLogin.js
+│       │   ├── AdminDashboard.js
+│       │   ├── Recommendations.js
+│       │   ├── Claims.js
+│       │   ├── Policies.js
+│       │   └── Profile.js
+│       ├── App.js
+│       └── package.json
 │
 └── README.md
 
+````
 
- ⚙️ Prerequisites
+---
 
-Make sure you have installed:
+# ⚙️ Backend Setup
 
-- Python 3.9+
-- Node.js (v16 or above)
-- PostgreSQL
-- Git
+## Step 1: Clone Repository
 
-
-
- 🛠️ Backend Setup (Local Machine)
-
- Step 1: Clone the Repository
-
-
-git clone <your-repo-link>
+```bash
+git clone <repo-url>
 cd insurance-comparison-recommendation-and-claim-assistant
+````
 
+---
 
- Step 2: Create Virtual Environment
+## Step 2: Create Virtual Environment
 
+Windows:
+
+```bash
 python -m venv venv
-venv\Scripts\activate   (Windows)
-source venv/bin/activate   (Mac/Linux)
+venv\Scripts\activate
+```
 
- Step 3: Install Dependencies
+Mac/Linux:
 
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
+---
+
+## Step 3: Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
- Step 4: Setup PostgreSQL Database
+---
 
-Open PostgreSQL and run:
+## Step 4: Setup PostgreSQL
 
+Create database:
+
+```sql
 CREATE DATABASE trustsure;
-
+```
 
 Import schema:
 
-
+```bash
 psql -U postgres -d trustsure -f database/schema.sql
+```
 
 Seed policies:
 
+```bash
 python backend/seed_policies.py
+```
 
- Step 5: Run Backend Server
+---
 
+## Step 5: Run Backend
+
+```bash
 uvicorn backend.main:app --reload
+```
 
 Backend runs at:
 
+```
+http://127.0.0.1:8000
+```
 
-[http://127.0.0.1:8000](http://127.0.0.1:8000)
+Swagger Docs:
 
-Swagger API docs available at:
+```
+http://127.0.0.1:8000/docs
+```
 
-[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+---
 
+# 💻 Frontend Setup
 
-💻 Frontend Setup
-
- Step 1: Navigate to Frontend
-
+```bash
 cd frontend
-
-Step 2: Install Dependencies
-
 npm install
-
-Step 3: Start Frontend
-
 npm start
+```
 
 Frontend runs at:
 
-[http://localhost:3000](http://localhost:3000)
+```
+http://localhost:3000
+```
 
- 📊 Database Design
+---
+
+# 📊 Database Design
 
 Tables include:
 
-- Users
-- Providers
-- Policies
-- UserPolicies
-- Claims
-- ClaimDocuments
-- Recommendations
-- FraudFlags
-- AdminLogs
+* Users
+* Providers
+* Policies
+* UserPolicies
+* Claims
+* ClaimDocuments
+* Recommendations
+* FraudFlags
+* AdminLogs
 
-The schema ensures:
-- Referential integrity
-- Proper foreign keys
-- Status-based workflows
-- Risk profile storage
+Ensures:
+
+* Referential integrity
+* Foreign key enforcement
+* Status-based workflow tracking
+* Risk profile storage
+* Fraud monitoring logs
+
+---
 
 # 🎯 Key Highlights
 
-✔ Full-stack architecture  
-✔ REST API design  
-✔ Advanced filtering system  
-✔ Multi-policy comparison  
-✔ Personalized recommendation logic  
-✔ Claims lifecycle workflow  
-✔ Fraud detection engine  
-✔ Admin monitoring system  
+✔ Full-stack production-style architecture
+✔ JWT authentication (User & Admin)
+✔ Advanced filtering engine
+✔ Multi-policy comparison
+✔ Weighted recommendation logic
+✔ Claims lifecycle workflow
+✔ Fraud detection engine
+✔ Admin analytics dashboard
+✔ Real-time email notification system
 
+---
 
 # 📌 Future Enhancements
 
-- Machine learning fraud detection
-- AI-based premium prediction
-- Payment gateway integration
-- Cloud deployment (AWS / Docker)
-- Real-time notification system
+* Machine learning fraud detection
+* AI-based premium prediction
+* Payment gateway integration
+* Docker deployment
+* Cloud hosting (AWS)
+* Real-time notifications via WebSockets
+
+---
 
 # 📜 License
 
 MIT License
 
+---
+
 # 👩‍💻 Developed By
 
-Pusuluri Lakshmi Pujakshya  
-insurance-comparison-recommendation-and-claim-assisstant project
-Python Technology Stack 
-Intern@Infosys Springboard 6.0
+**Pusuluri Lakshmi Pujakshya**
+Python Technology Stack Intern
+Infosys Springboard 6.0
+
+```
+
+```
