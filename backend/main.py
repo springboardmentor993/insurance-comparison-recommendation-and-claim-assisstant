@@ -10,8 +10,9 @@ from routes import policies
 from routes import recommend   # ← IMPORTANT
 from routes import claims
 from routes import upload
+from routes import admin_auth
 app.include_router(upload.router)
-
+app.include_router(admin_auth.router)
 # Create tables
 Base.metadata.create_all(bind=engine)
 
