@@ -70,24 +70,67 @@
       color: #555;
       margin-bottom: 20px;
     }
+
+    .switch {
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    .switch span {
+      color: #ff6ec7;
+      cursor: pointer;
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
 
 <div class="login-card">
+
   <div class="logo">TrustSure</div>
   <div class="subtitle">Smart Insurance Platform</div>
 
-  <h2>Login</h2>
+  <!-- LOGIN FORM -->
+  <div id="loginForm">
+    <h2>Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
 
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+    <div class="switch">
+      Don't have an account?
+      <span onclick="showSignup()">Register</span>
+    </div>
+  </div>
 
-  <button onclick="login()">Login</button>
+  <!-- SIGNUP FORM -->
+  <div id="signupForm" style="display:none;">
+    <h2>Register</h2>
+    <input id="regEmail" placeholder="Email">
+    <input id="regPassword" type="password" placeholder="Password">
+    <button onclick="register()">Register</button>
+
+    <div class="switch">
+      Already have an account?
+      <span onclick="showLogin()">Login</span>
+    </div>
+  </div>
+
 </div>
 
 <script>
+
+function showSignup() {
+  document.getElementById("loginForm").style.display = "none";
+  document.getElementById("signupForm").style.display = "block";
+}
+
+function showLogin() {
+  document.getElementById("signupForm").style.display = "none";
+  document.getElementById("loginForm").style.display = "block";
+}
+
 async function login() {
   try {
     const email = document.getElementById("email").value.trim();
@@ -100,17 +143,11 @@ async function login() {
 
     const res = await fetch("http://127.0.0.1:8000/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
     });
 
     const data = await res.json();
-    console.log("Server response:", data);
 
     if (!res.ok) {
       alert(data.detail || "Login failed ❌");
@@ -121,14 +158,45 @@ async function login() {
 
     alert("Login successful ✅");
 
-    // redirect to React app
     window.location.href = "http://localhost:3000";
 
   } catch (err) {
     alert("Backend server not running ❌");
-    console.error(err);
   }
 }
+
+async function register() {
+  try {
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPassword").value.trim();
+
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
+    }
+
+    const res = await fetch("http://127.0.0.1:8000/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.detail || "Signup failed ❌");
+      return;
+    }
+
+    alert("Registration successful! Please login.");
+
+    showLogin();
+
+  } catch (err) {
+    alert("Backend server not running ❌");
+  }
+}
+
 </script>
 
 </body>
