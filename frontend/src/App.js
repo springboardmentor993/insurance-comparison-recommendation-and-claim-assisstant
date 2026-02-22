@@ -11,7 +11,12 @@ import FileClaim from "./pages/FileClaim";
 import UploadDocuments from "./pages/UploadDocuments";
 import ClaimStatus from "./pages/ClaimStatus";
 import AdminClaims from "./pages/AdminClaims";
-
+import UserPreferences from "./pages/UserPreferences";
+import ScoreBreakdown from "./pages/ScoreBreakdown";
+import AdminSignup from "./pages/AdminSignup";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import UserSignup from "./pages/UserSignup";
 import "./App.css";
 
 function App() {
@@ -49,6 +54,7 @@ function App() {
           <Link to="/profile" className="nav-btn">Profile</Link>
           <Link to="/recommendations" className="nav-btn">Recommendations</Link>
           <Link to="/admin-claims">Admin</Link>
+          <Link to="/preferences">Preferences</Link>
         </div>
 
         <button className="logout-btn" onClick={logout}>
@@ -69,6 +75,13 @@ function App() {
         <Route path="/upload-documents" element={<UploadDocuments />} />
         <Route path="/claim-status" element={<ClaimStatus />} />
         <Route path="/admin-claims" element={<AdminClaims />} />
+        <Route path="/preferences" element={<UserPreferences />} />
+        <Route path="/score-breakdown" element={<ScoreBreakdown />} />
+        <Route path="/score-breakdown" element={<ScoreBreakdown />} />
+        <Route path="/admin-signup" element={<AdminSignup />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/signup" element={<UserSignup />} />
       </Routes>
 
     </Router>
