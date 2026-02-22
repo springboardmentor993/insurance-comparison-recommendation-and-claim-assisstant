@@ -10,7 +10,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
-
+    role = Column(String, default="user")
     purchased_policies = relationship("UserPolicies", back_populates="user")
 
 
