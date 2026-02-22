@@ -25,6 +25,13 @@ def recommend(
     min_budget: float = 0,
     max_budget: float = 999999,
     min_coverage: float = 0,
+
+    # 🔥 NEW RISK PARAMETERS
+    risk_appetite: str = "",
+    smoking: str = "",
+    medical: str = "",
+    monthly_budget: float = 0,
+
     db: Session = Depends(get_db),
 ):
 
@@ -52,38 +59,90 @@ def recommend(
 
     for p in policies:
 
+        coverage_score = normalize(p.coverage, max_cov)
+        claim_score = normalize(p.claim_ratio, max_claim)
+        rating_score = normalize(p.customer_rating, max_rating)
+        price_score = 100 - normalize(p.premium, max_price)
+
+        # -------------------------
+        # BASE SCORE (unchanged logic)
+        # -------------------------
+
         score = (
-            normalize(p.coverage, max_cov) * 0.35 +
-            normalize(p.claim_ratio, max_claim) * 0.30 +
-            normalize(p.customer_rating, max_rating) * 0.20 +
-            (100 - normalize(p.premium, max_price)) * 0.15
+            coverage_score * 0.35 +
+            claim_score * 0.30 +
+            rating_score * 0.20 +
+            price_score * 0.15
         )
+
+        # -------------------------
+        # 🔥 RISK PROFILE BONUS LOGIC
+        # -------------------------
+
+        # High risk appetite → prefer higher coverage
+        if risk_appetite.lower() == "high":
+            score += coverage_score * 0.10
+
+        # Low risk appetite → prefer cheaper premium
+        if risk_appetite.lower() == "low":
+            score += price_score * 0.10
+
+        # Smoking → higher coverage preferred
+        if smoking.lower() == "yes":
+            score += coverage_score * 0.05
+
+        # Medical conditions → strong claim ratio preferred
+        if medical and medical.lower() != "none":
+            score += claim_score * 0.10
+
+        # Monthly budget preference
+        if monthly_budget:
+            if p.premium <= monthly_budget:
+                score += 5  # small fixed bonus
 
         reasons = []
 
-        if p.coverage > max_cov * 0.7:
+        if coverage_score > 70:
             reasons.append("High coverage")
 
-        if p.claim_ratio > 95:
+        if claim_score > 80:
             reasons.append("Excellent claim success")
 
-        if p.customer_rating >= 4:
+        if rating_score > 80:
             reasons.append("Top customer rating")
 
-        if p.premium < max_price * 0.6:
+        if price_score > 50:
             reasons.append("Affordable premium")
 
+        if risk_appetite:
+            reasons.append("Matched your risk profile")
+
         results.append({
-            "id": p.id,
-            "title": p.title,
-            "company": f"Provider {p.provider_id}",
-            "premium": p.premium,
-            "coverage": p.coverage,
-            "claim": p.claim_ratio,
-            "rating": p.customer_rating,
-            "score": round(score, 1),
-            "reasons": reasons
-        })
+    "id": p.id,
+    "title": p.title,
+    "company": f"Provider {p.provider_id}",
+    "premium": p.premium,
+    "coverage": p.coverage,
+    "claim": p.claim_ratio,
+    "rating": p.customer_rating,
+    "score": round(score, 1),
+
+    # 🔥 NEW BREAKDOWN DATA
+    "breakdown": {
+        "coverage_score": round(coverage_score, 1),
+        "claim_score": round(claim_score, 1),
+        "rating_score": round(rating_score, 1),
+        "price_score": round(price_score, 1),
+        "weights": {
+            "coverage": 0.35,
+            "claim": 0.30,
+            "rating": 0.20,
+            "price": 0.15
+        }
+    },
+
+    "reasons": reasons
+})
 
     results.sort(key=lambda x: x["score"], reverse=True)
 
