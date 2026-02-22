@@ -1,0 +1,938 @@
+{
+    "providers": [
+        {
+            "id": 1,
+            "name": "Life Insurance Corporation of India (LIC)",
+            "type": "life",
+            "country": "India"
+        },
+        {
+            "id": 2,
+            "name": "HDFC Life",
+            "type": "life",
+            "country": "India"
+        },
+        {
+            "id": 3,
+            "name": "ICICI Prudential Life",
+            "type": "life",
+            "country": "India"
+        },
+        {
+            "id": 4,
+            "name": "Tata AIG Life",
+            "type": "life",
+            "country": "India"
+        },
+        {
+            "id": 5,
+            "name": "Bajaj Allianz Life",
+            "type": "life",
+            "country": "India"
+        },
+        {
+            "id": 6,
+            "name": "Star Health and Allied Insurance",
+            "type": "health",
+            "country": "India"
+        },
+        {
+            "id": 7,
+            "name": "Aditya Birla Health Insurance",
+            "type": "health",
+            "country": "India"
+        },
+        {
+            "id": 8,
+            "name": "Apollo Munich Health Insurance",
+            "type": "health",
+            "country": "India"
+        },
+        {
+            "id": 9,
+            "name": "ICICI Lombard Health",
+            "type": "health",
+            "country": "India"
+        },
+        {
+            "id": 10,
+            "name": "Bajaj Allianz Health",
+            "type": "health",
+            "country": "India"
+        },
+        {
+            "id": 11,
+            "name": "HDFC Ergo General Insurance",
+            "type": "auto",
+            "country": "India"
+        },
+        {
+            "id": 12,
+            "name": "ICICI Lombard Auto",
+            "type": "auto",
+            "country": "India"
+        },
+        {
+            "id": 13,
+            "name": "Bajaj Allianz Auto",
+            "type": "auto",
+            "country": "India"
+        },
+        {
+            "id": 14,
+            "name": "TATA AIG Auto Insurance",
+            "type": "auto",
+            "country": "India"
+        },
+        {
+            "id": 15,
+            "name": "Royal Sundaram Auto",
+            "type": "auto",
+            "country": "India"
+        },
+        {
+            "id": 16,
+            "name": "Oriental Insurance Auto",
+            "type": "auto",
+            "country": "India"
+        },
+        {
+            "id": 17,
+            "name": "New India Assurance Auto",
+            "type": "auto",
+            "country": "India"
+        },
+        {
+            "id": 18,
+            "name": "HDFC Ergo Home Insurance",
+            "type": "home",
+            "country": "India"
+        },
+        {
+            "id": 19,
+            "name": "ICICI Lombard Home",
+            "type": "home",
+            "country": "India"
+        },
+        {
+            "id": 20,
+            "name": "Bajaj Allianz Home",
+            "type": "home",
+            "country": "India"
+        },
+        {
+            "id": 21,
+            "name": "TATA AIG Home Insurance",
+            "type": "home",
+            "country": "India"
+        },
+        {
+            "id": 22,
+            "name": "Royal Sundaram Home",
+            "type": "home",
+            "country": "India"
+        },
+        {
+            "id": 23,
+            "name": "Kotak Mahindra General Insurance",
+            "type": "home",
+            "country": "India"
+        },
+        {
+            "id": 24,
+            "name": "Cholamandalam General Insurance",
+            "type": "travel",
+            "country": "India"
+        },
+        {
+            "id": 25,
+            "name": "ICICI Lombard Travel",
+            "type": "travel",
+            "country": "India"
+        },
+        {
+            "id": 26,
+            "name": "Bajaj Allianz Travel",
+            "type": "travel",
+            "country": "India"
+        },
+        {
+            "id": 27,
+            "name": "HDFC Ergo Travel",
+            "type": "travel",
+            "country": "India"
+        },
+        {
+            "id": 28,
+            "name": "AIG Travel Insurance",
+            "type": "travel",
+            "country": "Global"
+        },
+        {
+            "id": 29,
+            "name": "Metlife",
+            "type": "life",
+            "country": "Global"
+        },
+        {
+            "id": 30,
+            "name": "AXA Insurance",
+            "type": "health",
+            "country": "Global"
+        }
+    ],
+    "policies": [
+        {
+            "id": 1,
+            "title": "LIC Jeevan Bima",
+            "policy_type": "life",
+            "provider_id": 1,
+            "premium": 2500,
+            "coverage_amount": 5000000,
+            "term_months": 240,
+            "coverage": {
+                "death_benefit": true,
+                "maturity_benefit": true,
+                "bonus": true
+            },
+            "description": "Pure life insurance with maturity benefits and annual bonuses"
+        },
+        {
+            "id": 2,
+            "title": "LIC Jeevan Plus",
+            "policy_type": "life",
+            "provider_id": 1,
+            "premium": 3500,
+            "coverage_amount": 7500000,
+            "term_months": 240,
+            "coverage": {
+                "death_benefit": true,
+                "maturity_benefit": true,
+                "bonus": true,
+                "investment": true
+            },
+            "description": "Endowment plan with investment options and guaranteed returns"
+        },
+        {
+            "id": 3,
+            "title": "HDFC Life Click 2 Protect",
+            "policy_type": "life",
+            "provider_id": 2,
+            "premium": 1800,
+            "coverage_amount": 5000000,
+            "term_months": 180,
+            "coverage": {
+                "death_benefit": true,
+                "critical_illness": false
+            },
+            "description": "Term life insurance with high coverage and low premium"
+        },
+        {
+            "id": 4,
+            "title": "HDFC Life Click 2 Protect Plus",
+            "policy_type": "life",
+            "provider_id": 2,
+            "premium": 2800,
+            "coverage_amount": 10000000,
+            "term_months": 240,
+            "coverage": {
+                "death_benefit": true,
+                "critical_illness": true,
+                "accidental_disability": true
+            },
+            "description": "Comprehensive term life with critical illness and disability coverage"
+        },
+        {
+            "id": 5,
+            "title": "ICICI Prudential iProtect",
+            "policy_type": "life",
+            "provider_id": 3,
+            "premium": 1950,
+            "coverage_amount": 5000000,
+            "term_months": 180,
+            "coverage": {
+                "death_benefit": true,
+                "accidental_disability": true
+            },
+            "description": "Affordable term life with accidental disability coverage"
+        },
+        {
+            "id": 6,
+            "title": "ICICI Prudential Life Stage",
+            "policy_type": "life",
+            "provider_id": 3,
+            "premium": 4200,
+            "coverage_amount": 15000000,
+            "term_months": 360,
+            "coverage": {
+                "death_benefit": true,
+                "maturity_benefit": true,
+                "critical_illness": true
+            },
+            "description": "Comprehensive life insurance with investment and critical illness benefits"
+        },
+        {
+            "id": 7,
+            "title": "Tata AIG Life Super Term",
+            "policy_type": "life",
+            "provider_id": 4,
+            "premium": 2100,
+            "coverage_amount": 7500000,
+            "term_months": 240,
+            "coverage": {
+                "death_benefit": true,
+                "accidental_disability": true
+            },
+            "description": "Flexible term life with additional accidental benefits"
+        },
+        {
+            "id": 8,
+            "title": "Bajaj Allianz Life Guard",
+            "policy_type": "life",
+            "provider_id": 5,
+            "premium": 2300,
+            "coverage_amount": 5000000,
+            "term_months": 200,
+            "coverage": {
+                "death_benefit": true,
+                "critical_illness": true
+            },
+            "description": "Life insurance with guaranteed critical illness coverage"
+        },
+        {
+            "id": 9,
+            "title": "Star Health Comprehensive Health",
+            "policy_type": "health",
+            "provider_id": 6,
+            "premium": 3200,
+            "coverage_amount": 500000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": false,
+                "pre_existing": true
+            },
+            "description": "Comprehensive health insurance with pre-existing disease coverage"
+        },
+        {
+            "id": 10,
+            "title": "Star Health Activa Fit",
+            "policy_type": "health",
+            "provider_id": 6,
+            "premium": 2800,
+            "coverage_amount": 750000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": true,
+                "wellness": true
+            },
+            "description": "Family health plan with wellness benefits and maternity coverage"
+        },
+        {
+            "id": 11,
+            "title": "Aditya Birla Health Active",
+            "policy_type": "health",
+            "provider_id": 7,
+            "premium": 2500,
+            "coverage_amount": 600000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": true
+            },
+            "description": "Family health insurance with maternity and surgical benefits"
+        },
+        {
+            "id": 12,
+            "title": "Aditya Birla Health Active Max",
+            "policy_type": "health",
+            "provider_id": 7,
+            "premium": 4500,
+            "coverage_amount": 1500000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": true,
+                "critical_illness": true,
+                "wellness": true
+            },
+            "description": "Premium family health plan with critical illness and wellness programs"
+        },
+        {
+            "id": 13,
+            "title": "Apollo Munich Health Guard",
+            "policy_type": "health",
+            "provider_id": 8,
+            "premium": 3000,
+            "coverage_amount": 700000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "pre_existing": true
+            },
+            "description": "Health insurance with pre-existing disease coverage from day 1"
+        },
+        {
+            "id": 14,
+            "title": "ICICI Lombard Health Companion",
+            "policy_type": "health",
+            "provider_id": 9,
+            "premium": 2700,
+            "coverage_amount": 500000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": true
+            },
+            "description": "Comprehensive family health insurance plan"
+        },
+        {
+            "id": 15,
+            "title": "ICICI Lombard Health Companion Plus",
+            "policy_type": "health",
+            "provider_id": 9,
+            "premium": 5200,
+            "coverage_amount": 2000000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": true,
+                "critical_illness": true,
+                "wellness": true
+            },
+            "description": "Premium comprehensive health insurance with all benefits"
+        },
+        {
+            "id": 16,
+            "title": "Bajaj Allianz Health Secure",
+            "policy_type": "health",
+            "provider_id": 10,
+            "premium": 2600,
+            "coverage_amount": 550000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true
+            },
+            "description": "Affordable family health insurance"
+        },
+        {
+            "id": 17,
+            "title": "Bajaj Allianz Health Secure Plus",
+            "policy_type": "health",
+            "provider_id": 10,
+            "premium": 4800,
+            "coverage_amount": 1800000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": true,
+                "critical_illness": true
+            },
+            "description": "Comprehensive family health with maternity and critical illness"
+        },
+        {
+            "id": 18,
+            "title": "HDFC Ergo Car Premium",
+            "policy_type": "auto",
+            "provider_id": 11,
+            "premium": 4500,
+            "coverage_amount": 1000000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "comprehensive": true,
+                "personal_accident": true
+            },
+            "description": "Comprehensive car insurance with third-party and personal accident coverage"
+        },
+        {
+            "id": 19,
+            "title": "HDFC Ergo Car Essential",
+            "policy_type": "auto",
+            "provider_id": 11,
+            "premium": 2500,
+            "coverage_amount": 500000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "own_damage": true
+            },
+            "description": "Third-party and own damage car insurance"
+        },
+        {
+            "id": 20,
+            "title": "ICICI Lombard Two Wheeler",
+            "policy_type": "auto",
+            "provider_id": 12,
+            "premium": 1200,
+            "coverage_amount": 200000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "own_damage": true
+            },
+            "description": "Two-wheeler insurance with comprehensive coverage"
+        },
+        {
+            "id": 21,
+            "title": "ICICI Lombard Car Premier",
+            "policy_type": "auto",
+            "provider_id": 12,
+            "premium": 5200,
+            "coverage_amount": 1500000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "comprehensive": true,
+                "roadside_assistance": true
+            },
+            "description": "Premium car insurance with roadside assistance"
+        },
+        {
+            "id": 22,
+            "title": "Bajaj Allianz Car Policy",
+            "policy_type": "auto",
+            "provider_id": 13,
+            "premium": 4200,
+            "coverage_amount": 1000000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "comprehensive": true
+            },
+            "description": "Comprehensive car insurance with flexible coverage options"
+        },
+        {
+            "id": 23,
+            "title": "Bajaj Allianz Two Wheeler Supreme",
+            "policy_type": "auto",
+            "provider_id": 13,
+            "premium": 1500,
+            "coverage_amount": 300000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "comprehensive": true,
+                "personal_accident": true
+            },
+            "description": "Two-wheeler insurance with personal accident coverage"
+        },
+        {
+            "id": 24,
+            "title": "TATA AIG Car Insurance",
+            "policy_type": "auto",
+            "provider_id": 14,
+            "premium": 4800,
+            "coverage_amount": 1200000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "comprehensive": true,
+                "zero_depreciation": true
+            },
+            "description": "Car insurance with zero depreciation coverage"
+        },
+        {
+            "id": 25,
+            "title": "TATA AIG Two Wheeler",
+            "policy_type": "auto",
+            "provider_id": 14,
+            "premium": 1400,
+            "coverage_amount": 250000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "own_damage": true
+            },
+            "description": "Affordable two-wheeler insurance"
+        },
+        {
+            "id": 26,
+            "title": "Royal Sundaram Motor",
+            "policy_type": "auto",
+            "provider_id": 15,
+            "premium": 4600,
+            "coverage_amount": 1100000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "comprehensive": true
+            },
+            "description": "Comprehensive motor insurance with repair assistance"
+        },
+        {
+            "id": 27,
+            "title": "Oriental Insurance Auto",
+            "policy_type": "auto",
+            "provider_id": 16,
+            "premium": 3800,
+            "coverage_amount": 800000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "own_damage": true
+            },
+            "description": "Budget-friendly comprehensive auto insurance"
+        },
+        {
+            "id": 28,
+            "title": "New India Assurance Motor",
+            "policy_type": "auto",
+            "provider_id": 17,
+            "premium": 3500,
+            "coverage_amount": 750000,
+            "term_months": 12,
+            "coverage": {
+                "third_party": true,
+                "comprehensive": true
+            },
+            "description": "Government-backed comprehensive auto insurance"
+        },
+        {
+            "id": 29,
+            "title": "HDFC Ergo Home Secure",
+            "policy_type": "home",
+            "provider_id": 18,
+            "premium": 5000,
+            "coverage_amount": 5000000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": true,
+                "personal_liability": true
+            },
+            "description": "Comprehensive home insurance covering building and contents"
+        },
+        {
+            "id": 30,
+            "title": "HDFC Ergo Home Essential",
+            "policy_type": "home",
+            "provider_id": 18,
+            "premium": 3500,
+            "coverage_amount": 2000000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": false,
+                "personal_liability": true
+            },
+            "description": "Affordable home insurance for building coverage"
+        },
+        {
+            "id": 31,
+            "title": "ICICI Lombard Home Secure",
+            "policy_type": "home",
+            "provider_id": 19,
+            "premium": 5500,
+            "coverage_amount": 6000000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": true,
+                "personal_liability": true,
+                "jewellery": true
+            },
+            "description": "Premium home insurance with jewellery coverage"
+        },
+        {
+            "id": 32,
+            "title": "ICICI Lombard Home Standard",
+            "policy_type": "home",
+            "provider_id": 19,
+            "premium": 4000,
+            "coverage_amount": 3000000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": true,
+                "personal_liability": true
+            },
+            "description": "Standard home insurance with comprehensive coverage"
+        },
+        {
+            "id": 33,
+            "title": "Bajaj Allianz Home Insurance",
+            "policy_type": "home",
+            "provider_id": 20,
+            "premium": 4800,
+            "coverage_amount": 4500000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": true,
+                "personal_liability": true
+            },
+            "description": "Comprehensive home insurance plan"
+        },
+        {
+            "id": 34,
+            "title": "Bajaj Allianz Apartment Insurance",
+            "policy_type": "home",
+            "provider_id": 20,
+            "premium": 3200,
+            "coverage_amount": 2500000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": true
+            },
+            "description": "Apartment-specific insurance plan"
+        },
+        {
+            "id": 35,
+            "title": "TATA AIG Home Insurance",
+            "policy_type": "home",
+            "provider_id": 21,
+            "premium": 5200,
+            "coverage_amount": 5500000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": true,
+                "personal_liability": true
+            },
+            "description": "Comprehensive TATA AIG home protection"
+        },
+        {
+            "id": 36,
+            "title": "Royal Sundaram Home",
+            "policy_type": "home",
+            "provider_id": 22,
+            "premium": 4500,
+            "coverage_amount": 4000000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": true,
+                "personal_liability": true
+            },
+            "description": "Reliable home insurance from Royal Sundaram"
+        },
+        {
+            "id": 37,
+            "title": "Kotak Mahindra Home Insurance",
+            "policy_type": "home",
+            "provider_id": 23,
+            "premium": 4700,
+            "coverage_amount": 4500000,
+            "term_months": 12,
+            "coverage": {
+                "building": true,
+                "contents": true,
+                "personal_liability": true
+            },
+            "description": "Kotak Mahindra comprehensive home insurance"
+        },
+        {
+            "id": 38,
+            "title": "Cholamandalam Travel Insurance",
+            "policy_type": "travel",
+            "provider_id": 24,
+            "premium": 800,
+            "coverage_amount": 1000000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "evacuation": true,
+                "baggage": true,
+                "trip_cancellation": true
+            },
+            "description": "Comprehensive travel insurance for international trips"
+        },
+        {
+            "id": 39,
+            "title": "Cholamandalam Domestic Travel",
+            "policy_type": "travel",
+            "provider_id": 24,
+            "premium": 300,
+            "coverage_amount": 250000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "baggage": true,
+                "trip_cancellation": false
+            },
+            "description": "Domestic travel insurance plan"
+        },
+        {
+            "id": 40,
+            "title": "ICICI Lombard Travel Plus",
+            "policy_type": "travel",
+            "provider_id": 25,
+            "premium": 950,
+            "coverage_amount": 1500000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "evacuation": true,
+                "baggage": true,
+                "trip_cancellation": true
+            },
+            "description": "International travel insurance with cancellation cover"
+        },
+        {
+            "id": 41,
+            "title": "ICICI Lombard Travel Basic",
+            "policy_type": "travel",
+            "provider_id": 25,
+            "premium": 400,
+            "coverage_amount": 300000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "baggage": true
+            },
+            "description": "Budget-friendly travel insurance"
+        },
+        {
+            "id": 42,
+            "title": "Bajaj Allianz Travel Insurance",
+            "policy_type": "travel",
+            "provider_id": 26,
+            "premium": 900,
+            "coverage_amount": 1200000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "evacuation": true,
+                "baggage": true,
+                "trip_cancellation": true
+            },
+            "description": "Complete travel coverage for international journeys"
+        },
+        {
+            "id": 43,
+            "title": "Bajaj Allianz Travel Lite",
+            "policy_type": "travel",
+            "provider_id": 26,
+            "premium": 350,
+            "coverage_amount": 200000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "baggage": true
+            },
+            "description": "Lightweight travel insurance plan"
+        },
+        {
+            "id": 44,
+            "title": "HDFC Ergo Travel Insurance",
+            "policy_type": "travel",
+            "provider_id": 27,
+            "premium": 850,
+            "coverage_amount": 1000000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "evacuation": true,
+                "baggage": true,
+                "trip_cancellation": true
+            },
+            "description": "HDFC Ergo travel protection plan"
+        },
+        {
+            "id": 45,
+            "title": "HDFC Ergo Travel Essential",
+            "policy_type": "travel",
+            "provider_id": 27,
+            "premium": 380,
+            "coverage_amount": 280000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "baggage": true
+            },
+            "description": "Essential travel insurance coverage"
+        },
+        {
+            "id": 46,
+            "title": "AIG Global Travel",
+            "policy_type": "travel",
+            "provider_id": 28,
+            "premium": 1200,
+            "coverage_amount": 2000000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "evacuation": true,
+                "baggage": true,
+                "trip_cancellation": true,
+                "adventure_sports": true
+            },
+            "description": "Premium global travel insurance with adventure sports coverage"
+        },
+        {
+            "id": 47,
+            "title": "AIG Travel Basic",
+            "policy_type": "travel",
+            "provider_id": 28,
+            "premium": 600,
+            "coverage_amount": 500000,
+            "term_months": 1,
+            "coverage": {
+                "medical": true,
+                "evacuation": true,
+                "baggage": true
+            },
+            "description": "AIG basic travel insurance plan"
+        },
+        {
+            "id": 48,
+            "title": "MetLife Term Insurance Pro",
+            "policy_type": "life",
+            "provider_id": 29,
+            "premium": 2400,
+            "coverage_amount": 8000000,
+            "term_months": 240,
+            "coverage": {
+                "death_benefit": true,
+                "accidental_disability": true,
+                "critical_illness": true
+            },
+            "description": "MetLife comprehensive term life insurance"
+        },
+        {
+            "id": 49,
+            "title": "AXA Health Premium",
+            "policy_type": "health",
+            "provider_id": 30,
+            "premium": 5000,
+            "coverage_amount": 2000000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": true,
+                "critical_illness": true,
+                "wellness": true
+            },
+            "description": "AXA premium comprehensive health insurance"
+        },
+        {
+            "id": 50,
+            "title": "Star Health Advanced Plan",
+            "policy_type": "health",
+            "provider_id": 6,
+            "premium": 4200,
+            "coverage_amount": 1200000,
+            "term_months": 12,
+            "coverage": {
+                "hospitalization": true,
+                "surgery": true,
+                "maternity": true,
+                "critical_illness": true
+            },
+            "description": "Star Health advanced health insurance with critical illness"
+        }
+    ]
+}

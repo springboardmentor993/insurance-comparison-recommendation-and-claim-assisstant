@@ -1,0 +1,408 @@
+/* Admin Review Component Styles */
+
+.admin-review-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f5f5f5;
+    min-height: 100vh;
+}
+
+/* Error Banner */
+.error-banner {
+    background: #fee;
+    border-left: 4px solid #f44;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn 0.3s ease;
+}
+
+.error-banner .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #f44;
+}
+
+/* Loading */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    gap: 20px;
+}
+
+.spinner {
+    border: 4px solid #e0e0e0;
+    border-top: 4px solid #2196f3;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dashboard Stats */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 36px;
+    font-weight: bold;
+    color: #2196f3;
+}
+
+.stat-card.pending {
+    border-left: 4px solid #ff9800;
+}
+
+.stat-card.pending .stat-value {
+    color: #ff9800;
+}
+
+.stat-card.approved {
+    border-left: 4px solid #4caf50;
+}
+
+.stat-card.approved .stat-value {
+    color: #4caf50;
+}
+
+.stat-card.rejected {
+    border-left: 4px solid #f44336;
+}
+
+.stat-card.rejected .stat-value {
+    color: #f44336;
+}
+
+/* Controls Bar */
+.controls-bar {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #333;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn,
+.btn-small {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn {
+    padding: 12px 20px;
+    font-size: 15px;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-success {
+    background: #4caf50;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #45a049;
+}
+
+.btn-secondary {
+    background: #607d8b;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #546e7a;
+}
+
+.btn-small {
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.btn-approve {
+    background: #4caf50;
+    color: white;
+}
+
+.btn-approve:hover:not(:disabled) {
+    background: #45a049;
+}
+
+.btn-reject {
+    background: #f44336;
+    color: white;
+}
+
+.btn-reject:hover:not(:disabled) {
+    background: #da190b;
+}
+
+/* Claims Table */
+.claims-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.claims-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.claims-table thead {
+    background: #f5f5f5;
+    border-bottom: 2px solid #ddd;
+}
+
+.claims-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.claims-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.claims-table tbody tr {
+    transition: background 0.2s;
+}
+
+.claims-table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+.claim-id {
+    font-weight: 600;
+    color: #2196f3;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-under_review,
+.badge-under-review {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.badge-approved {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-rejected {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.badge-paid {
+    background: #e0f2f1;
+    color: #00695c;
+}
+
+.no-data {
+    text-align: center;
+    color: #999;
+    padding: 40px !important;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.read-only {
+    color: #999;
+    font-style: italic;
+}
+
+/* Audit Log Section */
+.audit-log-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.audit-log-section h3 {
+    margin-top: 0;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.audit-logs {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.audit-logs ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.audit-entry {
+    padding: 12px;
+    border-left: 3px solid #2196f3;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.audit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.audit-header strong {
+    color: #333;
+}
+
+.action {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #2196f3;
+    color: white;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.audit-time {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .controls-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .action-buttons {
+        width: 100%;
+    }
+
+    .claims-table {
+        font-size: 12px;
+    }
+
+    .claims-table th,
+    .claims-table td {
+        padding: 10px;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
