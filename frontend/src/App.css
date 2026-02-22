@@ -4,59 +4,7 @@ body {
   background: #f5f7fb;
 }
 
-/* Navbar layout */
-
-.navbar {
-  background: linear-gradient(90deg, #1e3c72, #ff6ec7);
-  padding: 15px 30px;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* left */
-
-.brand {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-/* center links */
-
-.nav-center {
-  display: flex;
-  gap: 25px;
-}
-
-.nav-center a {
-  color: white;
-  text-decoration: none;
-}
-
-.nav-center a:hover {
-  text-decoration: underline;
-}
-
-/* logout */
-
-.logout {
-  background: white;
-  color: #1e3c72;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* page */
-
-.page {
-  text-align: center;
-  margin-top: 80px;
-}
-/* ===== Top Navbar ===== */
+/* ================= NAVBAR ================= */
 
 .navbar {
   background: linear-gradient(90deg, #2c3e75, #d94aa8);
@@ -67,16 +15,46 @@ body {
   color: white;
 }
 
+/* Brand / Logo */
+
+.brand,
 .logo {
   font-size: 26px;
   font-weight: bold;
+  color: white;
 }
 
+/* Center Navigation */
+
+.nav-center,
 .nav-links {
   display: flex;
   gap: 30px;
+  align-items: center;
 }
 
+/* ===== FIX FOR LINK STYLING ===== */
+
+/* Make ALL links inside navbar white */
+.nav-center a,
+.nav-links a,
+.nav-btn {
+  text-decoration: none;
+  color: white !important;
+  font-size: 18px;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+/* Hover effect */
+.nav-center a:hover,
+.nav-links a:hover,
+.nav-btn:hover {
+  color: #ffd6f4 !important;
+  transform: translateY(-2px);
+}
+
+/* If using button navigation */
 .nav-links button {
   background: transparent;
   border: none;
@@ -84,16 +62,17 @@ body {
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.3s ease;
 }
 
 .nav-links button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   opacity: 0.85;
 }
 
-/* Logout button */
+/* ================= LOGOUT BUTTON ================= */
 
+.logout,
 .logout-btn {
   background: white;
   color: #2c3e75;
@@ -103,37 +82,29 @@ body {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.3s ease;
 }
 
+.logout:hover,
 .logout-btn:hover {
   background: #f2f2f2;
 }
 
-/* ===== Page background ===== */
+/* ================= PAGE ================= */
 
 .page {
   background: #f5f6fa;
   min-height: 100vh;
   padding: 40px;
+  text-align: center;
+  margin-top: 0;
 }
 
-/* ===== Title ===== */
+/* ================= TITLE ================= */
 
 .title {
   text-align: center;
   font-size: 40px;
   color: #2c3e75;
   font-weight: bold;
-}
-.nav-btn {
-  text-decoration: none;
-  color: white;
-  font-size: 18px;
-  margin: 0 12px;
-  font-weight: bold;
-}
-
-.nav-btn:hover {
-  color: #ffd6f4;
 }
