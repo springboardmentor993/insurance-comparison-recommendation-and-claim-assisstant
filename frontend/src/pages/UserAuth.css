@@ -1,0 +1,77 @@
+.auth-container {
+  height: 100vh;
+  background: linear-gradient(135deg, #2c3e75, #d94aa8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-card {
+  background: white;
+  padding: 50px;
+  border-radius: 20px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.brand-title {
+  font-size: 32px;
+  color: #d94aa8;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: gray;
+  margin-bottom: 30px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.auth-card input:focus {
+  border-color: #d94aa8;
+  outline: none;
+  box-shadow: 0 0 5px rgba(217,74,168,0.5);
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #2c3e75, #d94aa8);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-card button:hover {
+  opacity: 0.9;
+}
+
+.switch-link {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.switch-link span {
+  color: #d94aa8;
+  cursor: pointer;
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

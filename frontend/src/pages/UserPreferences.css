@@ -1,4 +1,4 @@
-.profile-page {
+.preferences-page {
   min-height: 100vh;
   padding: 100px 8%;
   background: linear-gradient(135deg, #1e3c72, #9c27b0);
@@ -9,45 +9,75 @@
 
 /* FORM CARD */
 
-.profile-form-card {
+.preferences-form-card {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   background: white;
-  padding: 40px;
+  padding: 45px;
   border-radius: 20px;
   box-shadow: 0 25px 50px rgba(0,0,0,0.2);
 }
 
-.profile-form-card h2 {
+.preferences-form-card h2 {
   margin-bottom: 25px;
   color: #1e3c72;
 }
 
-.profile-form-card label {
+.preferences-form-card label {
   font-weight: 600;
   margin-bottom: 6px;
   display: block;
-  color: #333;
 }
 
-.profile-form-card input {
+.preferences-form-card input,
+.preferences-form-card select {
   width: 100%;
   padding: 12px;
   border-radius: 10px;
   border: 1px solid #ddd;
   margin-bottom: 18px;
-  font-size: 14px;
   background: #f9fafc;
-  transition: 0.3s ease;
 }
 
-.profile-form-card input:focus {
+.preferences-form-card input:focus,
+.preferences-form-card select:focus {
   border-color: #9c27b0;
   outline: none;
   box-shadow: 0 0 0 3px rgba(156,39,176,0.2);
 }
 
-/* SAVE BUTTON */
+/* SUMMARY CARD */
+
+.preferences-summary-card {
+  width: 100%;
+  max-width: 650px;
+  background: white;
+  padding: 50px;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.icon {
+  font-size: 60px;
+  margin-bottom: 15px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  text-align: left;
+  margin: 30px 0;
+}
+
+.summary-grid div {
+  background: #f4f6fb;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+/* BUTTONS */
 
 .save-btn {
   width: 100%;
@@ -58,50 +88,7 @@
   color: white;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.3s ease;
 }
-
-.save-btn:hover {
-  transform: translateY(-3px);
-}
-
-/* SUMMARY CARD */
-
-.profile-summary-card {
-  width: 100%;
-  max-width: 600px;
-  background: white;
-  padding: 50px;
-  border-radius: 20px;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-  text-align: center;
-}
-
-.user-icon {
-  font-size: 70px;
-  margin-bottom: 15px;
-}
-
-.profile-summary-card h2 {
-  margin-bottom: 30px;
-  color: #1e3c72;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  text-align: left;
-  margin-bottom: 30px;
-}
-
-.summary-grid div {
-  background: #f4f6fb;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-/* RESET BUTTON */
 
 .reset-btn {
   padding: 14px 30px;
@@ -111,9 +98,4 @@
   color: white;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.reset-btn:hover {
-  transform: translateY(-3px);
 }
