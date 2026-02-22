@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Recommendations.css";
 
 function stars(n) {
@@ -6,6 +7,8 @@ function stars(n) {
 }
 
 function Recommendations() {
+
+  const navigate = useNavigate(); // ✅ MUST be inside component
 
   const [policyTypes, setPolicyTypes] = useState([]);
   const [filters, setFilters] = useState({
@@ -18,14 +21,10 @@ function Recommendations() {
   const [data, setData] = useState({ recommended: [], best: null });
   const [error, setError] = useState("");
 
-  // ✅ load policy types from backend
   useEffect(() => {
     fetch("http://127.0.0.1:8000/recommend/policy-types")
       .then(res => res.json())
-      .then(d => {
-        if (Array.isArray(d)) setPolicyTypes(d);
-        else setPolicyTypes([]);
-      })
+      .then(d => setPolicyTypes(Array.isArray(d) ? d : []))
       .catch(() => setPolicyTypes([]));
   }, []);
 
@@ -52,12 +51,10 @@ function Recommendations() {
     }
   };
 
-  // 🔥 NEW: Buy Policy (Frontend Only)
   const buyPolicy = (policy) => {
 
     let purchased = JSON.parse(localStorage.getItem("purchasedPolicies")) || [];
 
-    // prevent duplicate purchase
     const already = purchased.find(p => p.id === policy.id);
     if (already) {
       alert("Policy already purchased");
@@ -75,7 +72,6 @@ function Recommendations() {
     };
 
     purchased.push(newPurchase);
-
     localStorage.setItem("purchasedPolicies", JSON.stringify(purchased));
 
     alert("Policy purchased successfully!");
@@ -87,7 +83,6 @@ function Recommendations() {
       <h1>AI-Powered Recommendations</h1>
 
       <div className="rec-box">
-
         <div className="rec-header">
           Generate Recommendation Area
         </div>
@@ -127,7 +122,6 @@ function Recommendations() {
           </button>
 
         </div>
-
       </div>
 
       {error && <p style={{color:"red"}}>{error}</p>}
@@ -139,7 +133,7 @@ function Recommendations() {
       )}
 
       <div className="policy-grid">
-        {data.recommended.map(p => (
+        {data.recommended.map((p) => (
           <div key={p.id} className="policy-card">
 
             <h3>{p.company}</h3>
@@ -158,20 +152,19 @@ function Recommendations() {
               <div key={i}>✅ {r}</div>
             ))}
 
-            {/* 🔥 ONLY ADDITION */}
             <button
-              style={{
-                marginTop: "10px",
-                padding: "8px",
-                backgroundColor: "#1e88e5",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer"
-              }}
               onClick={() => buyPolicy(p)}
+              className="buy-btn"
             >
               Buy Recommended Policy
+            </button>
+
+            {/* ✅ FIXED BREAKDOWN BUTTON */}
+            <button
+              onClick={() => navigate("/score-breakdown", { state: p })}
+              className="breakdown-btn"
+            >
+              View Score Breakdown
             </button>
 
           </div>
