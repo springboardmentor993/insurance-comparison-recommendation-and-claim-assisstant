@@ -1,0 +1,85 @@
+﻿
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 11 modules transformed.
+node.exe : 
+[31mΓ£ù[39m Build 
+failed in 383ms
+At C:\Program Files\n
+odejs\npm.ps1:29 
+char:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: ([31mΓ£   
+ ù[39m Build fai    
+led in 383ms:Str    
+ing) [], RemoteE    
+xception
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+[31merror during 
+build:
+[31m[vite:css] 
+[postcss] It looks 
+like you're trying 
+to use `tailwindcss` 
+directly as a 
+PostCSS plugin. The 
+PostCSS plugin has 
+moved to a separate 
+package, so to 
+continue using 
+Tailwind CSS with 
+PostCSS you'll need 
+to install `@tailwind
+css/postcss` and 
+update your PostCSS 
+configuration.[31m
+file: [36mC:/Users/v
+arsh/OneDrive/Desktop
+/insurance/frontend/s
+rc/index.css:undefine
+d:NaN[31m
+    at at (C:\Users\v
+arsh\OneDrive\Desktop
+\insurance\frontend\n
+ode_modules\tailwindc
+ss\dist\lib.js:38:164
+3)
+    at 
+LazyResult.runOnRoot 
+(C:\Users\varsh\OneDr
+ive\Desktop\insurance
+\frontend\node_module
+s\postcss\lib\lazy-re
+sult.js:361:16)
+    at 
+LazyResult.runAsync (
+C:\Users\varsh\OneDri
+ve\Desktop\insurance\
+frontend\node_modules
+\postcss\lib\lazy-res
+ult.js:290:26)
+    at 
+LazyResult.async (C:\
+Users\varsh\OneDrive\
+Desktop\insurance\fro
+ntend\node_modules\po
+stcss\lib\lazy-result
+.js:192:30)
+    at 
+LazyResult.then (C:\U
+sers\varsh\OneDrive\D
+esktop\insurance\fron
+tend\node_modules\pos
+tcss\lib\lazy-result.
+js:436:17)[39m
