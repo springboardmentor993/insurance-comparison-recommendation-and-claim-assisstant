@@ -4,7 +4,7 @@ body, html {
   height: 100%;
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #4f46e5, #3b82f6); /* gradient background */
+  background: linear-gradient(135deg, #a5a4b7, #3b82f6); /* gradient background */
 }
 
 .container {
@@ -15,10 +15,10 @@ body, html {
 }
 
 .login-box {
-  background-color: #ffffff;
+  background-color: #8b2222;
   padding: 50px 40px;
   border-radius: 15px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3); /* bigger shadow */
+  box-shadow: 0 15px 40px rgba(246, 244, 244, 0.3); /* bigger shadow */
   width: 380px;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -89,3 +89,55 @@ body, html {
   color: #dc2626; /* red for error */
 }
 
+.home {
+  padding: 40px;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.card {
+  background: linear-gradient(135deg, #5f2cc9, #9b5de5);
+  color: white;
+  padding: 25px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.emoji {
+  font-size: 30px;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #4b1fa6, #8f3bbf);
+  padding: 15px 40px;
+  color: white;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.nav-links a {
+  margin: 0 15px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}

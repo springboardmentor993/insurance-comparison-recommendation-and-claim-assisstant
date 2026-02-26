@@ -1,0 +1,40 @@
+.dashboard {
+  padding: 30px;
+}
+
+.dashboard h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.category-card {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.emoji {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+}

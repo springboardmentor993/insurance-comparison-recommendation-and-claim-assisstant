@@ -35,3 +35,12 @@ class Policy(Base):
     deductible = Column(Integer, nullable=True)
     tnc_url = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+class Claim(Base):
+    __tablename__ = "claims"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_email = Column(String)
+    policy_id = Column(Integer)
+    description = Column(String)
+    documents = Column(String)  # can store file name or link
+    status = Column(String, default="Reported")
