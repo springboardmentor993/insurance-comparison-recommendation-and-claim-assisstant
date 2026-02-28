@@ -4,7 +4,6 @@ from sqlalchemy import func, extract
 from fastapi.responses import StreamingResponse
 import csv
 import io
-from datetime import datetime
 
 import models
 from database import get_db
@@ -22,13 +21,14 @@ def admin_only(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    # Hardcoded admin email (as you requested)
     if current_user.email != "satyn152@gmail.com":
         raise HTTPException(status_code=403, detail="Admin access required")
     return current_user
 
 
 # -------------------------------------------------
-# GET ALL CLAIMS (WITH DOCUMENTS)
+# GET ALL CLAIMS (WITH DOCUMENTS + FRAUD FLAGS)
 # -------------------------------------------------
 @router.get("/claims")
 def get_all_claims(
@@ -40,6 +40,8 @@ def get_all_claims(
     result = []
 
     for claim in claims:
+
+        # Get documents
         documents = db.query(models.ClaimDocuments).filter(
             models.ClaimDocuments.claim_id == claim.id
         ).all()
@@ -53,13 +55,28 @@ def get_all_claims(
             for doc in documents
         ]
 
+        # Get fraud flags
+        fraud_flags = db.query(models.FraudFlags).filter(
+            models.FraudFlags.claim_id == claim.id
+        ).all()
+
+        fraud_list = [
+            {
+                "rule_code": flag.rule_code,
+                "severity": flag.severity,
+                "details": flag.details
+            }
+            for flag in fraud_flags
+        ]
+
         result.append({
             "id": claim.id,
             "claim_number": claim.claim_number,
             "amount_claimed": float(claim.amount_claimed),
             "status": claim.status,
             "created_at": claim.created_at,
-            "documents": doc_list
+            "documents": doc_list,
+            "fraud_flags": fraud_list  # ✅ Added fraud flags
         })
 
     return result
@@ -79,8 +96,13 @@ def dashboard_summary(
     total_policies = db.query(models.UserPolicies).count()
     total_fraud_flags = db.query(models.FraudFlags).count()
 
-    total_premium = db.query(func.sum(models.UserPolicies.premium)).scalar() or 0
-    total_claim_amount = db.query(func.sum(models.Claims.amount_claimed)).scalar() or 0
+    total_premium = db.query(
+        func.sum(models.UserPolicies.premium)
+    ).scalar() or 0
+
+    total_claim_amount = db.query(
+        func.sum(models.Claims.amount_claimed)
+    ).scalar() or 0
 
     return {
         "total_users": total_users,
@@ -93,7 +115,7 @@ def dashboard_summary(
 
 
 # -------------------------------------------------
-# FRAUD SUMMARY
+# FRAUD SUMMARY (Grouped by Rule)
 # -------------------------------------------------
 @router.get("/fraud-summary")
 def fraud_summary(

@@ -35,11 +35,7 @@ def run_fraud_checks(db: Session, claim: models.Claims):
 
     # Rule 1: Large Amount
     if float(claim.amount_claimed) > 100000:
-        fraud_flags.append({
-            "rule_code": "HIGH_AMOUNT",
-            "severity": "high",
-            "details": "Claim amount exceeds 100000"
-        })
+        fraud_flags.append(("HIGH_AMOUNT", "high", "Claim amount exceeds 100000"))
         high_severity_found = True
 
     # Rule 2: Suspicious Timing
@@ -50,11 +46,8 @@ def run_fraud_checks(db: Session, claim: models.Claims):
     if user_policy:
         days_difference = (claim.incident_date - user_policy.start_date).days
         if days_difference <= 7:
-            fraud_flags.append({
-                "rule_code": "SUSPICIOUS_TIMING",
-                "severity": "medium",
-                "details": "Claim filed within 7 days of policy start"
-            })
+            fraud_flags.append(("SUSPICIOUS_TIMING", "medium",
+                                "Claim filed within 7 days of policy start"))
 
     # Rule 3: Duplicate Claim Amount
     duplicate_claim = db.query(models.Claims).filter(
@@ -64,11 +57,8 @@ def run_fraud_checks(db: Session, claim: models.Claims):
     ).first()
 
     if duplicate_claim:
-        fraud_flags.append({
-            "rule_code": "DUPLICATE_AMOUNT",
-            "severity": "medium",
-            "details": "Duplicate claim amount detected"
-        })
+        fraud_flags.append(("DUPLICATE_AMOUNT", "medium",
+                            "Duplicate claim amount detected"))
 
     # Rule 4: Multiple Claims in 3 Days
     three_days_ago = datetime.utcnow() - timedelta(days=3)
@@ -80,28 +70,20 @@ def run_fraud_checks(db: Session, claim: models.Claims):
     ).count()
 
     if recent_claims >= 2:
-        fraud_flags.append({
-            "rule_code": "MULTIPLE_RECENT_CLAIMS",
-            "severity": "high",
-            "details": "Multiple claims filed within 3 days"
-        })
+        fraud_flags.append(("MULTIPLE_RECENT_CLAIMS", "high",
+                            "Multiple claims filed within 3 days"))
         high_severity_found = True
 
-    # Insert Fraud Flags
-    for flag in fraud_flags:
-        new_flag = models.FraudFlags(
+    for rule_code, severity, details in fraud_flags:
+        db.add(models.FraudFlags(
             claim_id=claim.id,
-            rule_code=flag["rule_code"],
-            severity=flag["severity"],
-            details=flag["details"]
-        )
-        db.add(new_flag)
+            rule_code=rule_code,
+            severity=severity,
+            details=details
+        ))
 
-    # Auto change status if high severity
     if high_severity_found:
         claim.status = "under_review"
-
-    db.commit()
 
 
 # -----------------------------
@@ -140,6 +122,7 @@ def create_claim(
     db.refresh(new_claim)
 
     run_fraud_checks(db, new_claim)
+    db.commit()
 
     return {
         "id": new_claim.id,
@@ -178,7 +161,7 @@ def get_user_claims(
 
 
 # -----------------------------
-# UPLOAD CLAIM DOCUMENT
+# UPLOAD CLAIM DOCUMENT (FIXED VERSION)
 # -----------------------------
 @router.post("/{claim_id}/upload")
 def upload_claim_document(
@@ -187,6 +170,8 @@ def upload_claim_document(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+
+    file_location = None  # Prevent crash in finally
 
     claim = (
         db.query(models.Claims)
@@ -201,13 +186,19 @@ def upload_claim_document(
     if not claim:
         raise HTTPException(status_code=404, detail="Claim not found")
 
-    file_location = f"temp_{file.filename}"
-
     try:
-        with open(file_location, "wb") as buffer:
-            buffer.write(file.file.read())
+        file_bytes = file.file.read()
 
-        file_url = upload_file_to_drive(file_location, file.filename)
+        safe_filename = file.filename.replace(" ", "_")
+        file_location = f"temp_{safe_filename}"
+
+        with open(file_location, "wb") as buffer:
+            buffer.write(file_bytes)
+
+        file_url = upload_file_to_drive(file_location, safe_filename)
+
+        if not file_url:
+            raise Exception("Google Drive upload failed")
 
         new_doc = models.ClaimDocuments(
             claim_id=claim_id,
@@ -225,10 +216,11 @@ def upload_claim_document(
 
     except Exception as e:
         db.rollback()
+        print("UPLOAD ERROR:", e)
         raise HTTPException(status_code=500, detail=str(e))
 
     finally:
-        if os.path.exists(file_location):
+        if file_location and os.path.exists(file_location):
             os.remove(file_location)
 
 
@@ -247,7 +239,9 @@ def update_claim_status(
     current_user: models.User = Depends(get_current_user)
 ):
 
-    claim = db.query(models.Claims).filter(models.Claims.id == claim_id).first()
+    claim = db.query(models.Claims).filter(
+        models.Claims.id == claim_id
+    ).first()
 
     if not claim:
         raise HTTPException(status_code=404, detail="Claim not found")

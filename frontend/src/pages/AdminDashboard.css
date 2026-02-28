@@ -1,193 +1,211 @@
 .admin-container {
-  padding: 60px;
-  background: #f4f6f9;
+  padding: 60px 90px;
+  background: #f5f7fb;
   min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
-/* ================= HEADER ================= */
+/* HEADER */
 .admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 50px;
+  margin-bottom: 45px;
 }
 
 .admin-header h2 {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 600;
   color: #1e293b;
-  letter-spacing: -0.5px;
 }
 
 .header-actions {
   display: flex;
   gap: 15px;
+  align-items: center;
 }
 
-.header-actions select,
-.header-actions button {
+.sort-select {
   padding: 10px 16px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  border: 1px solid #dbeafe;
   background: white;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.header-actions button {
+/* FIXED EXPORT BUTTON */
+.export-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
   background: #2563eb;
   color: white;
-  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.header-actions button:hover {
+.export-btn:hover {
   background: #1d4ed8;
 }
 
-/* ================= GRID ================= */
-.claims-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-  gap: 30px;
+/* FIXED BACK BUTTON */
+.back-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  cursor: pointer;
 }
 
-/* ================= CLAIM CARD ================= */
+.back-btn:hover {
+  background: #f1f5f9;
+}
+
+/* GRID */
+.claims-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 28px;
+}
+
+/* CARD */
 .claim-card {
   background: white;
-  border-radius: 18px;
-  padding: 30px;
-  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
-  transition: all 0.25s ease;
-  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+  transition: 0.2s ease;
 }
 
 .claim-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
-/* ================= TOP SECTION ================= */
-.claim-top {
+.claim-summary {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 }
 
-.claim-top h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 5px;
+.amount {
+  color: #64748b;
+  font-size: 14px;
+  margin: 5px 0;
 }
 
-.claim-top p {
-  font-size: 15px;
-  color: #475569;
-}
-
-/* ================= STATUS BADGE ================= */
+/* STATUS COLORS */
 .status {
-  display: inline-block;
-  margin-top: 8px;
   padding: 6px 14px;
-  border-radius: 30px;
+  border-radius: 20px;
   font-size: 12px;
-  background: #e2e8f0;
-  color: #334155;
-  text-transform: capitalize;
   font-weight: 500;
 }
 
-/* ================= ACTION BUTTONS ================= */
-.decision-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.status-approved {
+  background: #dcfce7;
+  color: #166534;
 }
 
-.decision-buttons button {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
-.decision-buttons button:hover {
+.status-under_review {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.status-submitted {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.status-draft {
   background: #e2e8f0;
+  color: #334155;
 }
 
-/* ================= VIEW DOCUMENTS BUTTON ================= */
-.view-docs button {
-  margin-top: 20px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  background: #2563eb;
+/* REVIEW BUTTON */
+.review-btn {
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #2563eb, #1d4ed8);
   color: white;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 13px;
-}
-
-.view-docs button:hover {
-  background: #1d4ed8;
-}
-
-/* ================= DOCUMENTS ================= */
-.documents-wrapper {
-  margin-top: 20px;
-  animation: fadeIn 0.25s ease-in-out;
-}
-
-.doc-grid {
-  display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
-}
-
-.doc-card {
-  width: 140px;
-  height: 110px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  transition: transform 0.2s ease;
-}
-
-.doc-card:hover {
-  transform: scale(1.03);
-}
-
-.doc-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.doc-card a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  text-decoration: none;
-  color: #2563eb;
   font-weight: 500;
 }
 
-/* ================= ANIMATION ================= */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* EXPAND */
+.expand-section {
+  margin-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 20px;
+}
+
+/* FRAUD */
+.fraud-box {
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.fraud-danger {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #b91c1c;
+}
+
+.fraud-safe {
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+/* DECISION */
+.decision-section {
+  display: flex;
+  gap: 12px;
+}
+
+.decision-section button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.approve {
+  background: #16a34a;
+  color: white;
+}
+
+.reject {
+  background: #dc2626;
+  color: white;
+}
+
+.review {
+  background: #f59e0b;
+  color: white;
+}
+
+.card-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.doc-btn {
+  padding: 6px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }

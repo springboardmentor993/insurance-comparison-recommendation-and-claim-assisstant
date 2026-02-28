@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import "./AdminDashboard.css";
 import { BASE_URL } from "../api";
@@ -11,60 +11,44 @@ const AdminDashboard = ({ onBack }) => {
 
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    loadClaims();
-    // eslint-disable-next-line
-  }, []);
-
-  const loadClaims = async () => {
+  const loadClaims = useCallback(async () => {
     try {
-      const res = await axios.get(
-        `${BASE_URL}/admin/claims`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      setClaims(Array.isArray(res.data) ? res.data : []);
+      const res = await axios.get(`${BASE_URL}/admin/claims`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setClaims(res.data || []);
     } catch {
       alert("Failed to load claims");
-      setClaims([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    loadClaims();
+  }, [loadClaims]);
 
   const updateStatus = async (id, status) => {
     try {
       await axios.put(
         `${BASE_URL}/claims/${id}/status`,
         { status },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       loadClaims();
+      setExpanded(null);
     } catch {
       alert("Failed to update status");
     }
   };
 
-  // ✅ FINAL FIXED EXPORT FUNCTION
   const exportCSV = async () => {
     try {
-      const response = await fetch(
-        `${BASE_URL}/admin/export-claims`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/admin/export-claims`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      if (!response.ok) {
-        throw new Error("Export failed");
-      }
+      if (!response.ok) throw new Error();
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -75,9 +59,8 @@ const AdminDashboard = ({ onBack }) => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-
     } catch {
-      alert("Failed to export CSV");
+      alert("Export failed");
     }
   };
 
@@ -93,17 +76,22 @@ const AdminDashboard = ({ onBack }) => {
 
       <div className="admin-header">
         <h2>Insurance Claim Review Panel</h2>
+
         <div className="header-actions">
-          <select onChange={(e) => setSortBy(e.target.value)}>
+          <select
+            className="sort-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
             <option value="date">Sort by Date</option>
             <option value="amount">Sort by Amount</option>
           </select>
 
-          <button onClick={exportCSV}>
+          <button className="export-btn" onClick={exportCSV}>
             Export CSV
           </button>
 
-          <button onClick={onBack}>
+          <button className="back-btn" onClick={onBack}>
             Back
           </button>
         </div>
@@ -113,79 +101,88 @@ const AdminDashboard = ({ onBack }) => {
         {sortedClaims.map((claim) => (
           <div key={claim.id} className="claim-card">
 
-            <div className="claim-top">
+            <div className="claim-summary">
               <div>
                 <h3>{claim.claim_number}</h3>
-                <p>₹ {claim.amount_claimed}</p>
-                <span className={`status ${claim.status}`}>
+                <p className="amount">₹ {claim.amount_claimed}</p>
+
+                <span className={`status status-${claim.status}`}>
                   {claim.status.replace("_", " ")}
                 </span>
               </div>
 
-              <div className="decision-buttons">
+              <div className="card-buttons">
                 <button
-                  className="approve"
-                  onClick={() => updateStatus(claim.id, "approved")}
+                  className="review-btn"
+                  onClick={() =>
+                    setExpanded(expanded === claim.id ? null : claim.id)
+                  }
                 >
-                  Approve
+                  {expanded === claim.id ? "Hide Review" : "Check & Review"}
                 </button>
-                <button
-                  className="reject"
-                  onClick={() => updateStatus(claim.id, "rejected")}
-                >
-                  Reject
-                </button>
-                <button
-                  className="review"
-                  onClick={() => updateStatus(claim.id, "under_review")}
-                >
-                  Review
-                </button>
+
+                {claim.documents && claim.documents.length > 0 && (
+                  <button
+                    className="doc-btn"
+                    onClick={() =>
+                      window.open(claim.documents[0].file_url, "_blank")
+                    }
+                  >
+                    View Document
+                  </button>
+                )}
               </div>
             </div>
 
-            <div className="view-docs">
-              <button
-                onClick={() =>
-                  setExpanded(expanded === claim.id ? null : claim.id)
-                }
-              >
-                {expanded === claim.id
-                  ? "Hide Documents"
-                  : "View Documents"}
-              </button>
-            </div>
-
             {expanded === claim.id && (
-              <div className="documents-wrapper">
-                {claim.documents.length === 0 ? (
-                  <p>No documents uploaded</p>
+              <div className="expand-section">
+
+                {claim.fraud_flags?.length > 0 ? (
+                  <div className="fraud-box fraud-danger">
+                    <h4>🚨 Fraud Detected</h4>
+                    <ul>
+                      {claim.fraud_flags.map((flag, index) => (
+                        <li key={index}>
+                          <strong>{flag.rule_code}</strong> - {flag.details}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : (
-                  <div className="doc-grid">
-                    {claim.documents.map((doc) => (
-                      <div key={doc.id} className="doc-card">
-                        {doc.file_url.match(/\.(jpg|jpeg|png)$/i) ? (
-                          <img src={doc.file_url} alt="doc" />
-                        ) : (
-                          <a
-                            href={doc.file_url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Open File
-                          </a>
-                        )}
-                      </div>
-                    ))}
+                  <div className="fraud-box fraud-safe">
+                    <h4>✅ No Fraud Detected</h4>
                   </div>
                 )}
+
+                <div className="decision-section">
+                  <button
+                    className="approve"
+                    onClick={() => updateStatus(claim.id, "approved")}
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    className="reject"
+                    onClick={() => updateStatus(claim.id, "rejected")}
+                  >
+                    Reject
+                  </button>
+
+                  <button
+                    className="review"
+                    onClick={() => updateStatus(claim.id, "under_review")}
+                  >
+                    Mark Under Review
+                  </button>
+                </div>
+
               </div>
             )}
 
           </div>
         ))}
       </div>
-
     </div>
   );
 };

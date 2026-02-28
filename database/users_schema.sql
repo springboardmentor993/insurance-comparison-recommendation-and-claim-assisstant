@@ -2,7 +2,7 @@
 -- USERS TABLE
 -- ===============================
 
-CREATE TABLE public.users (
+CREATE TABLE USERS (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -11,3 +11,7 @@ CREATE TABLE public.users (
     risk_profile JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+

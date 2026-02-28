@@ -14,7 +14,7 @@ CREATE TYPE public.policy_type_enum AS ENUM (
 -- POLICIES TABLE
 -- ===============================
 
-CREATE TABLE public.policies (
+CREATE TABLE POLICIES (
     id SERIAL PRIMARY KEY,
     provider_id INT NOT NULL,
     policy_type public.policy_type_enum NOT NULL,

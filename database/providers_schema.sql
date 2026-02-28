@@ -2,7 +2,7 @@
 -- PROVIDERS TABLE
 -- ===============================
 
-CREATE TABLE public.providers (
+CREATE TABLE PROVIDERS (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     country VARCHAR(100),
