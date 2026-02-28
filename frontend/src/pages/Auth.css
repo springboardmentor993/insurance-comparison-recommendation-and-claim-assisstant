@@ -1,0 +1,102 @@
+/* ========================= */
+/* PAGE BACKGROUND */
+/* ========================= */
+
+body {
+  margin: 0;
+  background: linear-gradient(135deg, #eef2f7, #f8fafc);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ========================= */
+/* FORM CONTAINER */
+/* ========================= */
+
+.auth-container {
+  width: 400px;
+  margin: 80px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+/* ========================= */
+/* TITLES */
+/* ========================= */
+
+.auth-container h1,
+.auth-container h2 {
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+/* ========================= */
+/* INPUTS */
+/* ========================= */
+
+.auth-container input,
+.auth-container select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.auth-container input:focus,
+.auth-container select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* ========================= */
+/* BUTTONS */
+/* ========================= */
+
+.primary-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.primary-btn:hover {
+  background: #1d4ed8;
+}
+
+.secondary-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #6b7280;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.secondary-btn:hover {
+  background: #4b5563;
+}
+
+/* ========================= */
+/* ERROR TEXT */
+/* ========================= */
+
+.auth-container p {
+  font-size: 13px;
+}
