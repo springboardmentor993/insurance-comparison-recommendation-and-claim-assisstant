@@ -58,39 +58,39 @@ Email Notification System (SMTP)
 ---
 
 ## 📂 Project Structure
-LOGIN-APP/
 
+```
 LOGIN-APP/
 │
 ├── backend/
-│ ├── main.py
-│ ├── models.py
-│ ├── database.py
-│ ├── email_utils.py
-│ ├── requirements.txt
+│   ├── main.py
+│   ├── models.py
+│   ├── database.py
+│   ├── email_utils.py
+│   └── requirements.txt
 │
 ├── public/
 │
 ├── src/
-│ ├── pages/
-│ │ ├── AdminClaims.jsx
-│ │ ├── AdminLogin.jsx
-│ │ └── ClaimSubmission.jsx
-│ │
-│ ├── App.js
-│ ├── Admin.js
-│ ├── Login.js
-│ ├── Dashboard.js
-│ ├── Policies.js
-│ ├── PolicyDetails.js
-│ ├── CategoryPolicies.js
-│ ├── Recommendations.js
-│ ├── Profile.js
-│ └── index.js
+│   ├── pages/
+│   │   ├── AdminClaims.jsx
+│   │   ├── AdminLogin.jsx
+│   │   └── ClaimSubmission.jsx
+│   │
+│   ├── App.js
+│   ├── Admin.js
+│   ├── Login.js
+│   ├── Dashboard.js
+│   ├── CategoryPolicies.js
+│   ├── Policies.js
+│   ├── PolicyDetails.js
+│   ├── Recommendations.js
+│   ├── Profile.js
+│   └── index.js
 │
 ├── package.json
-└── README.md                                                                                                                                                      
----
+└── README.md
+```
 
 ## 🔄 Application Workflow
 
